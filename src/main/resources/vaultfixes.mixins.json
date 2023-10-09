@@ -5,9 +5,19 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "vaultfixes.refmap.json",
   "mixins": [
+  ],
+  "server": [
     "MobMixin",
     "SpawnerActionMixin",
-    "VaultInitMixin"
+    "VaultInitMixin",
+    "bounty.MixinBountyData",
+    "bounty.MixinTask",
+    "bounty.MixinCompletionTask",
+    "bounty.MixinDamageTask",
+    "bounty.MixinItemDiscoveryTask",
+    "bounty.MixinItemSubmissionTask",
+    "bounty.MixinKillEntityTask",
+    "bounty.MixinMiningTask"
   ],
   "client": [
   ],

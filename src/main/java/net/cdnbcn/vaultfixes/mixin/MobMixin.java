@@ -1,6 +1,6 @@
 package net.cdnbcn.vaultfixes.mixin;
 
-import net.cdnbcn.vaultfixes.MobMixinInterface;
+import net.cdnbcn.vaultfixes.mixin_interfaces.MobMixinInterface;
 import net.minecraft.world.entity.Mob;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -19,11 +19,13 @@ public class MobMixin implements MobMixinInterface {
             ci.cancel();
     }
 
+    @SuppressWarnings("unused")
     @Override
     public boolean vaultFixes$getAware() {
         return vaultFixes$isAware;
     }
 
+    @SuppressWarnings("unused")
     @Override
     public void vaultFixes$setAware(boolean value) {
         vaultFixes$isAware = value;
