@@ -145,3 +145,7 @@ hs_err_pid*
 replay_pid*
 
 # End of https://www.toptal.com/developers/gitignore/api/java,intellij,forgegradle
+
+
+# include a copy of the current library files!
+!libs/*.jar
