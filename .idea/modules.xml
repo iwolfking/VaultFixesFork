@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/VaultFixes.main.iml" filepath="$PROJECT_DIR$/.idea/modules/VaultFixes.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/VaultFixes.test.iml" filepath="$PROJECT_DIR$/.idea/modules/VaultFixes.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/net.cdnbcn.VaultFixes.test.iml" filepath="$PROJECT_DIR$/.idea/modules/net.cdnbcn.VaultFixes.test.iml" />
     </modules>
   </component>
 </project>
