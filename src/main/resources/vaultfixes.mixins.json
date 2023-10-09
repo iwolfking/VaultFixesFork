@@ -3,10 +3,10 @@
   "minVersion": "0.8",
   "package": "net.cdnbcn.vaultfixes.mixin",
   "compatibilityLevel": "JAVA_8",
-  "refmap": "VaultFixes.refmap.json",
+  "refmap": "vaultfixes.refmap.json",
   "mixins": [
-    "ISpawnerMixin",
     "MobMixin",
+    "SpawnerActionMixin",
     "VaultInitMixin"
   ],
   "client": [

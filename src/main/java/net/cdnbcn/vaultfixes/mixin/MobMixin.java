@@ -1,6 +1,6 @@
 package net.cdnbcn.vaultfixes.mixin;
 
-import net.cdnbcn.vaultfixes.IMobMixin;
+import net.cdnbcn.vaultfixes.MobMixinInterface;
 import net.minecraft.world.entity.Mob;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -9,23 +9,23 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = Mob.class, priority = 1)
-public class MobMixin implements IMobMixin {
+public class MobMixin implements MobMixinInterface {
     @Unique
-    public boolean isAware = true;
+    public boolean vaultFixes$isAware = true;
 
-    @Inject(method = "m_8107_", at = @At("HEAD"), cancellable = true, remap = false)
-    void aiStep(CallbackInfo ci) {
-        if(!isAware)
+    @Inject(method = "serverAiStep", at = @At(value = "INVOKE", target="Lnet/minecraft/util/profiling/ProfilerFiller;push(Ljava/lang/String;)V", ordinal = 0), cancellable = true)
+    void serverAiStep(CallbackInfo ci) {
+        if(!vaultFixes$isAware)
             ci.cancel();
     }
 
     @Override
     public boolean vaultFixes$getAware() {
-        return isAware;
+        return vaultFixes$isAware;
     }
 
     @Override
     public void vaultFixes$setAware(boolean value) {
-        isAware = value;
+        vaultFixes$isAware = value;
     }
 }

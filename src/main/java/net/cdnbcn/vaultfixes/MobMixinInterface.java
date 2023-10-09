@@ -1,6 +1,6 @@
 package net.cdnbcn.vaultfixes;
 
-public interface IMobMixin {
+public interface MobMixinInterface {
     boolean vaultFixes$getAware();
     void vaultFixes$setAware(boolean value);
 }
