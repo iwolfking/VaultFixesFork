@@ -7,6 +7,7 @@ import iskallia.vault.core.event.common.ChestGenerationEvent;
 import iskallia.vault.core.event.common.CoinStacksGenerationEvent;
 import iskallia.vault.core.event.common.LootableBlockGenerationEvent;
 import iskallia.vault.world.data.BountyData;
+import net.cdnbcn.vaultfixes.mixin_interfaces.TaskMixinInterface;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -94,8 +95,7 @@ public abstract class MixinItemDiscoveryTask extends MixinTask {
                                     task.increment(stack.getCount());
                                     var25.remove();
                                     if (task.isComplete()) {
-                                        //noinspection DataFlowIssue
-                                        ((MixinTask) (Object) task).complete(player);
+                                        ((TaskMixinInterface)task).vaultFixes$callComplete(player);
                                         break;
                                     }
                                 }
@@ -115,8 +115,7 @@ public abstract class MixinItemDiscoveryTask extends MixinTask {
                         task.increment(stack.getCount());
                         cached.remove(stack);
                         if (task.isComplete()) {
-                            //noinspection DataFlowIssue
-                            ((MixinTask) (Object) task).complete(player);
+                            ((TaskMixinInterface)task).vaultFixes$callComplete(player);
                             break;
                         }
                     }

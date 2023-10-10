@@ -2,8 +2,8 @@ package net.cdnbcn.vaultfixes.bounty
 
 import iskallia.vault.bounty.task.Task
 import iskallia.vault.world.data.BountyData
-import net.cdnbcn.vaultfixes.mixin.bounty.MixinTask
 import net.cdnbcn.vaultfixes.mixin_interfaces.BountyDataMixinInterface
+import net.cdnbcn.vaultfixes.mixin_interfaces.TaskMixinInterface
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerPlayer
 import java.util.function.Consumer
@@ -35,8 +35,7 @@ object TaskHelpers {
                 continue
 
             doIncrement.accept(task)
-            @Suppress("CAST_NEVER_SUCCEEDS")
-            if (task.isComplete) (task as MixinTask).`vaultFixes$callComplete`(player)
+            if (task.isComplete) (task as TaskMixinInterface).`vaultFixes$callComplete`(player)
             break
         }
     }
