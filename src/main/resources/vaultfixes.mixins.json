@@ -4,9 +4,9 @@
   "package": "net.cdnbcn.vaultfixes.mixin",
   "compatibilityLevel": "JAVA_8",
   "refmap": "vaultfixes.refmap.json",
-  "mixins": [
-  ],
+  "mixins": [],
   "server": [
+    "AnimalPenMixin",
     "MobMixin",
     "SpawnerActionMixin",
     "VaultInitMixin",
