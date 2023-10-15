@@ -10,6 +10,7 @@
     "MobMixin",
     "SpawnerActionMixin",
     "VaultInitMixin",
+    "ModularRouterBlockEntityMixin",
     "bounty.MixinBountyData",
     "bounty.MixinTask",
     "bounty.MixinCompletionTask",

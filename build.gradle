@@ -163,6 +163,7 @@ dependencies {
     // The group id is ignored when searching -- in this case, it is "blank"
     implementation fg.deobf("blank:the_vault-${minecraft_version}:${the_vault_version}")
     implementation fg.deobf("blank:ispawner-${minecraft_version}:${ispawners_version}-forge")
+    implementation fg.deobf("blank:modular-routers-${minecraft_version}:${modular_routers_version}")
 
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html

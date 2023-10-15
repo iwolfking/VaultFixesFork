@@ -1,6 +1,7 @@
 package net.cdnbcn.vaultfixes;
 
 import com.mojang.logging.LogUtils;
+import net.cdnbcn.vaultfixes.config.ConfigManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import org.slf4j.Logger;
@@ -21,5 +22,7 @@ public class VaultFixes {
 
     public VaultFixes() {
         MinecraftForge.EVENT_BUS.register(this);
+
+        ConfigManager.INSTANCE.getConfig(); // invoke initializer to preload config
     }
 }
