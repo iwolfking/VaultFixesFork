@@ -1,5 +1,6 @@
 package net.cdnbcn.vaultfixes.mixin.gear;
 
+import com.google.common.collect.Iterables;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import iskallia.vault.core.net.BitBuffer;
@@ -79,6 +80,15 @@ public abstract class VaultGearDataMixin extends AttributeGearData implements Va
             case PREFIX -> Collections.unmodifiableList(this.prefixes_al);
             case SUFFIX -> Collections.unmodifiableList(this.suffixes_al);
         };
+    }
+
+    /**
+     * @author Koromaru Koruko
+     * @reason moved LinkedList to ArrayListDeque (locality optimization)
+     */
+    @Overwrite(remap = false)
+    public Iterable<VaultGearModifier<?>> getAllModifierAffixes() {
+        return Iterables.concat(this.prefixes_al, this.suffixes_al);
     }
 
     /**
