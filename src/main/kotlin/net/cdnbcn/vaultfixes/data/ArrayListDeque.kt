@@ -82,7 +82,7 @@ class ArrayListDeque<T>(private val inner: ArrayList<T>) : List<T>, Deque<T> {
     override fun offerLast(e: T): Boolean { return modifyAction { inner.add(e); true } }
     override fun offerFirst(e: T): Boolean { return modifyAction { inner.add(0, e); true } }
     override fun addLast(e: T) { offerLast(e) }
-    override fun addFirst(e: T) { addFirst(e) }
+    override fun addFirst(e: T) { push(e) }
     override fun offer(e: T): Boolean { offerLast(e); return true }
     override fun indexOf(element: T): Int { return inner.indexOf(element) }
 
