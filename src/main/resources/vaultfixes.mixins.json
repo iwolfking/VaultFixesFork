@@ -8,18 +8,21 @@
   "server": [
     "AnimalPenMixin",
     "MobMixin",
+    "ModularRouterBlockEntityMixin",
     "SpawnerActionMixin",
     "VaultInitMixin",
     "ChromaticIronMixin",
     "ModularRouterBlockEntityMixin",
     "bounty.MixinBountyData",
-    "bounty.MixinTask",
     "bounty.MixinCompletionTask",
     "bounty.MixinDamageTask",
     "bounty.MixinItemDiscoveryTask",
     "bounty.MixinItemSubmissionTask",
     "bounty.MixinKillEntityTask",
-    "bounty.MixinMiningTask"
+    "bounty.MixinMiningTask",
+    "bounty.MixinTask",
+    "gear.VaultGearDataMixin",
+    "gear.VaultGearData_TypeMixin"
   ],
   "client": [
   ],
