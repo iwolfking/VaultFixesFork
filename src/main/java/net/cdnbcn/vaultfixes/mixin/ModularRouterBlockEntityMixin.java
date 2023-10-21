@@ -26,8 +26,7 @@ public abstract class ModularRouterBlockEntityMixin {
      * @author Koromaru Koruko
      * @reason Inject additional logic module limiters
      */
-    @Inject(method = "compileUpgrades", locals = LocalCapture.NO_CAPTURE, remap = false, at = @At(value="INVOKE_ASSIGN",
-            target = "Ljava/lang/Math;max(II)I"))
+    @Inject(method = "compileUpgrades", locals = LocalCapture.NO_CAPTURE, remap = false, at = @At(value="RETURN"))
     public void compileUpgrades(CallbackInfo ci) {
         int activatorLimit = ConfigManager.INSTANCE.getConfig().getModularRouters().getActivatorModuleLimiter().get();
         if (activatorLimit > -1)
