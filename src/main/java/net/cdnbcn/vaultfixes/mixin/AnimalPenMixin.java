@@ -143,8 +143,10 @@ public abstract class AnimalPenMixin extends BlockEntity implements MenuProvider
                 }
             }
         } else {
-            if (tile.animalToReference == null && AnimalJarItem.containsEntity(invItem)) {
-                tile.animalToReference = AnimalJarItem.getAnimalFromItemStack(invItem, world);
+            if (AnimalJarItem.containsEntity(invItem)) {
+                if(tile.animalToReference == null){
+                    tile.animalToReference = AnimalJarItem.getAnimalFromItemStack(invItem, world);
+                }
             } else {
                 tile.animalToReference = null;
             }
