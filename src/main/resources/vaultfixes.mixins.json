@@ -22,7 +22,11 @@
     "bounty.MixinMiningTask",
     "bounty.MixinTask",
     "gear.VaultGearDataMixin",
-    "gear.VaultGearData_TypeMixin"
+    "gear.VaultGearData_TypeMixin",
+    "skill.SkillTreeMixin",
+    "skill.TieredSkillMixin",
+    "skill.SpecializedSkillMixin",
+    "skill.GroupSkillMixin"
   ],
   "client": [
   ],
