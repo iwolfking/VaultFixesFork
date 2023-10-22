@@ -1,7 +1,7 @@
-package net.cdnbcn.vaultfixes.config
+package net.cdnbcn.vaultfixes.data
 
 
-class ConfigEventHandler {
+class SimpleEventHandler {
     private val eventList: MutableList<Runnable> = mutableListOf()
 
     fun unregister(listener: Runnable): Boolean {

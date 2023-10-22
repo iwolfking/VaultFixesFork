@@ -1,5 +1,6 @@
 package net.cdnbcn.vaultfixes.config
 
+import net.cdnbcn.vaultfixes.data.SimpleEventHandler
 import net.minecraftforge.common.ForgeConfigSpec
 import net.minecraftforge.fml.ModLoadingContext
 import net.minecraftforge.fml.config.ModConfig
@@ -8,7 +9,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
 
 object ConfigManager {
     val config: Config
-    val onConfigReload : ConfigEventHandler = ConfigEventHandler()
+    val onConfigReload : SimpleEventHandler = SimpleEventHandler()
 
 
     private val configSpec: ForgeConfigSpec

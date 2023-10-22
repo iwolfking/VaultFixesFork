@@ -1,12 +1,13 @@
 package net.cdnbcn.vaultfixes.config
 
+import net.cdnbcn.vaultfixes.data.SimpleEventHandler
 import net.minecraftforge.common.ForgeConfigSpec
 import net.minecraftforge.common.ForgeConfigSpec.IntValue
 
 class ModularRoutersConfig(builder: ForgeConfigSpec.Builder){
     private var cacheActivatorModuleLimiter: Int = 0
     val activatorModuleLimiter: IntValue
-    val onLimiterUpdate = ConfigEventHandler()
+    val onLimiterUpdate = SimpleEventHandler()
     init
     {
         builder.push("modular_routers")
