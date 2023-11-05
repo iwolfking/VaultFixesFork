@@ -7,12 +7,11 @@
   "mixins": [],
   "server": [
     "AnimalPenMixin",
+    "ChromaticIronMixin",
     "MobMixin",
     "ModularRouterBlockEntityMixin",
     "SpawnerActionMixin",
     "VaultInitMixin",
-    "ChromaticIronMixin",
-    "ModularRouterBlockEntityMixin",
     "bounty.MixinBountyData",
     "bounty.MixinCompletionTask",
     "bounty.MixinDamageTask",
@@ -21,12 +20,13 @@
     "bounty.MixinKillEntityTask",
     "bounty.MixinMiningTask",
     "bounty.MixinTask",
-    "gear.VaultGearDataMixin",
     "gear.VaultGearData_TypeMixin",
+    "gear.VaultGearDataMixin",
+    "skill.GroupSkillMixin",
     "skill.SkillTreeMixin",
-    "skill.TieredSkillMixin",
     "skill.SpecializedSkillMixin",
-    "skill.GroupSkillMixin"
+    "skill.TieredSkillMixin",
+    "CrystalDataMixin"
   ],
   "client": [
   ],
