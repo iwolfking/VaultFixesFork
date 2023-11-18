@@ -22,7 +22,7 @@ public class SpawnerActionMixin {
     @Inject(method = "applyEggOverride", locals = LocalCapture.CAPTURE_FAILSOFT, remap = false, at = @At(value="INVOKE_ASSIGN",
             target = "Liskallia/ispawner/world/spawner/SpawnerAction;create(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/nbt/CompoundTag;Lnet/minecraft/network/chat/Component;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/MobSpawnType;ZZ)Lnet/minecraft/world/entity/Entity;"))
     void applyEggOverride(Level world, ItemStack stack, SpawnerContext context, CallbackInfoReturnable<Boolean> cir, BlockState state, EntityType<?> type, BlockPos pos, Entity entity) {
-        if(!(world instanceof VirtualWorld)) {
+        if(entity != null && !(world instanceof VirtualWorld)) {
             ((MobMixinInterface)entity).vaultFixes$setAware(false);
         }
     }
