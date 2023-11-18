@@ -164,7 +164,7 @@ dependencies {
     implementation fg.deobf("blank:the_vault-${minecraft_version}:${the_vault_version}")
     implementation fg.deobf("blank:vault_hunters_jewel_sorting:${vault_hunters_jewel_sorting_version}")
     implementation fg.deobf("blank:vaultintegrations-${minecraft_version}:${vaultintegrations_version}")
-    implementation fg.deobf("blank:ispawner-${minecraft_version}:${ispawners_version}-forge")
+    implementation fg.deobf("blank:ispawner:${ispawners_version}-forge")
     implementation fg.deobf("blank:modular-routers-${minecraft_version}:${modular_routers_version}")
 
     // For more info:
