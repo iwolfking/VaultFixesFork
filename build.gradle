@@ -193,7 +193,10 @@ tasks.named('processResources', ProcessResources).configure {
 
             // lib versions
             the_vault_version: the_vault_version,
+            vault_hunters_jewel_sorting_version: vault_hunters_jewel_sorting_version,
+            vaultintegrations_version: vaultintegrations_version,
             ispawners_version: ispawners_version,
+            modular_routers_version: modular_routers_version
     ]
 
     inputs.properties replaceProperties

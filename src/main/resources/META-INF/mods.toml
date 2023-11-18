@@ -42,8 +42,26 @@ description='''${mod_description}'''
    ordering="AFTER"
    side="SERVER"
 [[dependencies.${mod_id}]]
+   modId="vault_hunters_jewel_sorting"
+   mandatory=true
+   versionRange="${vault_hunters_jewel_sorting_version}"
+   ordering="AFTER"
+   side="SERVER"
+[[dependencies.${mod_id}]]
+   modId="vaultintegrations"
+   mandatory=true
+   versionRange="${vaultintegrations_version}"
+   ordering="AFTER"
+   side="SERVER"
+[[dependencies.${mod_id}]]
    modId="ispawner"
    mandatory=true
    versionRange="${ispawners_version}"
+   ordering="AFTER"
+   side="SERVER"
+[[dependencies.${mod_id}]]
+   modId="modularrouters"
+   mandatory=true
+   versionRange="${modular_routers_version}"
    ordering="AFTER"
    side="SERVER"
