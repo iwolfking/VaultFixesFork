@@ -40,14 +40,14 @@ public class VaultFixes {
     }
 
     @SubscribeEvent
-    private void playerJoin(PlayerEvent.PlayerLoggedInEvent event)
+    public void playerJoin(PlayerEvent.PlayerLoggedInEvent event)
     {
         final var player = (ServerPlayer)event.getPlayer();
         // load player snapshots file
         ((ServerPlayerMixinInterface)player).vaultFixes$setAllSnapshots(((VaultSnapshotsMixinInterface)VaultSnapshots.get(getServer())).vaultFixes$loadAllForPlayer(player.getUUID()));
     }
     @SubscribeEvent
-    private void playerLeave(PlayerEvent.PlayerLoggedOutEvent event)
+    public void playerLeave(PlayerEvent.PlayerLoggedOutEvent event)
     {
         final var player = (ServerPlayer)event.getPlayer();
         // save player snapshots file

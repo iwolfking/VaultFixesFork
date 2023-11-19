@@ -44,16 +44,19 @@ public class ServerboundOpenHistoricMessageMixin {
                             if(pos == 60)
                             {
                                 pos = 0;
-                                xpos.set(0);
+                                xpos.set(1);
                             }
 
                             prev60[pos] = uuid;
 
                             if (inuse.get() < 60)
-                                inuse.getAndIncrement();
+                                inuse.incrementAndGet();
                         }); // get last 60 (we grab extra in case there are uncompleted vaults)
 
-                        ArrayList<VaultSnapshot> result = Stream.concat(Arrays.stream(prev60, xpos.get(), 60), Arrays.stream(prev60, 0, xpos.get()))
+                        ArrayList<VaultSnapshot> result = Stream.concat(
+                                    xpos.get()==inuse.get() ? Stream.empty() : Arrays.stream(prev60, xpos.get()-1, inuse.get()),
+                                    xpos.get()==0 ? Stream.empty() : Arrays.stream(prev60, 0, xpos.get())
+                                )
                                 .map(vaultSnapshots::vaultFixes$getSnapshot)
                                 .filter(snapshot -> snapshot.getEnd() != null)
                                 .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);

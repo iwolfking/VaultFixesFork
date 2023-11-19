@@ -11,7 +11,9 @@ import net.cdnbcn.vaultfixes.mixin_interfaces.saving.ServerPlayerMixinInterface;
 import net.cdnbcn.vaultfixes.mixin_interfaces.saving.VListNBTMixinInterface;
 import net.cdnbcn.vaultfixes.mixin_interfaces.saving.VaultSnapshotMixinInterface;
 import net.cdnbcn.vaultfixes.mixin_interfaces.saving.VaultSnapshotsMixinInterface;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.nbt.*;
+import net.minecraft.server.dedicated.DedicatedServerProperties;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.spongepowered.asm.mixin.*;
 
@@ -37,13 +39,9 @@ public class VaultSnapshotsMixin implements VaultSnapshotsMixinInterface {
      * @author KoromaruKoruko
      * @reason Modify Save and Load
      */
-    @Overwrite(remap = false)
+    @Overwrite
     public CompoundTag save(CompoundTag nbt) {
         final ListIterator<VaultSnapshot> iter = snapshots.listIterator();
-        @SuppressWarnings("unchecked")
-        final var writeFn = ((VListNBTMixinInterface<VaultSnapshot, LongArrayTag>)snapshots).vaultFixes$getWrite();
-        final var folder = vaultFixes$getSnapshotsSaveFolder();
-
         while(iter.hasNext()) {
             final VaultSnapshot snapshot = iter.next();
 
@@ -56,12 +54,7 @@ public class VaultSnapshotsMixin implements VaultSnapshotsMixinInterface {
                     vaultFixes$cache.put(id, new AccessTimedData<>(snapshot));
                     iter.remove();
 
-                    final CompoundTag tag = new CompoundTag();
-                    tag.put("data", writeFn.apply(snapshot));
-                    try {
-                        NbtIo.write(tag, folder.resolve("snapshot_"+id+".nbt").toFile());
-                        iter.remove();
-                    } catch (IOException ignored) { }
+                    vaultFixes$writeFile(vaultFixes$getFileFor(id), snapshot);
                 }
                 ((VaultSnapshotMixinInterface)snapshot).vaultFixes$MarkSaved();
             }
@@ -78,17 +71,8 @@ public class VaultSnapshotsMixin implements VaultSnapshotsMixinInterface {
 
             final VaultSnapshot rawSnapshot = snapshot.getNoAccess();
             if(((VaultSnapshotMixinInterface)rawSnapshot).vaultFixes$NeedsSave()) {
-                final var optid = ((VaultSnapshotMixinInterface)rawSnapshot).vaultFixes$getVaultID();
-                if(optid.isPresent()) {
-                    final var id = optid.get();
-                    final CompoundTag tag = new CompoundTag();
-                    tag.put("data", writeFn.apply(rawSnapshot));
-                    try {
-                        NbtIo.write(tag, folder.resolve("snapshot_"+id+".nbt").toFile());
-                        iter.remove();
-                    } catch (IOException ignored) { }
-                }
-                ((VaultSnapshotMixinInterface)rawSnapshot).vaultFixes$MarkSaved();
+                final var id = ((VaultSnapshotMixinInterface)rawSnapshot).vaultFixes$getVaultID();
+                id.ifPresent(uuid -> vaultFixes$writeFile(vaultFixes$getFileFor(uuid), rawSnapshot));
             }
         }
 
@@ -271,6 +255,23 @@ public class VaultSnapshotsMixin implements VaultSnapshotsMixinInterface {
     }
 
     @Unique
+    private void vaultFixes$writeFile(File file, VaultSnapshot snapshot) {
+        try {
+            CompoundTag tag = new CompoundTag();
+            //noinspection unchecked
+            tag.put("data", ((VListNBTMixinInterface<VaultSnapshot, LongArrayTag>)snapshots)
+                    .vaultFixes$getWrite()
+                    .apply(snapshot)
+            );
+            NbtIo.write(tag, file);
+            ((VaultSnapshotMixinInterface)snapshot).vaultFixes$MarkSaved();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    @Unique
     private File vaultFixes$getFileFor(UUID id) { return vaultFixes$getSnapshotsSaveFolder().resolve("snapshot_"+id+".nbt").toFile(); }
 
     @Unique
@@ -279,12 +280,12 @@ public class VaultSnapshotsMixin implements VaultSnapshotsMixinInterface {
     private static Path vaultFixes$getSnapshotsSaveFolder() {
         if(vaultFixes$_snapshotsFolder == null)
         {
-            vaultFixes$_snapshotsFolder = Path.of("",
-                                        VaultFixes.getServer().getWorldData().getLevelName(),
-                                        "data",
-                                        "vaultfixes",
-                                        "snapshots"
-                                    );
+            vaultFixes$_snapshotsFolder = Path.of(
+                    DedicatedServerProperties.fromFile(Path.of("server.properties")).levelName,
+                    "data",
+                    "vaultfixes",
+                    "snapshots"
+            );
 
             try {
                 Files.createDirectories(vaultFixes$_snapshotsFolder);
@@ -302,8 +303,8 @@ public class VaultSnapshotsMixin implements VaultSnapshotsMixinInterface {
     private static Path vaultFixes$getPlayerSnapshotsFolder() {
         if(vaultFixes$_playerSnapshotsFolder == null)
         {
-            vaultFixes$_playerSnapshotsFolder = Path.of("",
-                    VaultFixes.getServer().getWorldData().getLevelName(),
+            vaultFixes$_playerSnapshotsFolder = Path.of(
+                    DedicatedServerProperties.fromFile(Path.of("server.properties")).levelName,
                     "data",
                     "vaultfixes",
                     "player_snapshots"

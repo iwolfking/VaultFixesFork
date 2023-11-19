@@ -53,7 +53,8 @@ public class VaultSnapshotMixin implements VaultSnapshotMixinInterface {
     private void setEnd(Vault end, CallbackInfoReturnable<VaultSnapshot> cir) {
         vaultFixes$IsDirty = true;
         final var snapshotId = end.get(Vault.ID);
-        end.get(Vault.STATS).getMap().keySet().forEach(id -> ((VaultSnapshotsMixinInterface)VaultSnapshots.get(VaultFixes.getServer())).vaultFixes$addForPlayer(id, snapshotId));
+        final var vaultSnapshots = (VaultSnapshotsMixinInterface)VaultSnapshots.get(VaultFixes.getServer());
+        end.get(Vault.STATS).getMap().keySet().forEach(id -> vaultSnapshots.vaultFixes$addForPlayer(id, snapshotId));
     }
 
     @Inject(method = "readBits", at = @At("RETURN"), remap = false)
