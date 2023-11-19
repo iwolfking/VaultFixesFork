@@ -12,6 +12,7 @@
     "ModularRouterBlockEntityMixin",
     "SpawnerActionMixin",
     "VaultInitMixin",
+    "CrystalDataMixin",
     "bounty.MixinBountyData",
     "bounty.MixinCompletionTask",
     "bounty.MixinDamageTask",
@@ -26,7 +27,13 @@
     "skill.SkillTreeMixin",
     "skill.SpecializedSkillMixin",
     "skill.TieredSkillMixin",
-    "CrystalDataMixin"
+    "saving.VaultSnapshotMixin",
+    "saving.VaultSnapshotsMixin",
+    "saving.VListNBTMixin",
+    "saving.ServerPlayerMixin",
+    "saving.PlayerStatisticsCollector$VaultRunsSnapshotMixin",
+    "saving.ServerboundOpenHistoricMessageMixin",
+    "saving.StatTotalsMixin"
   ],
   "client": [
   ],
