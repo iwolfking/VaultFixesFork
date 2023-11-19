@@ -18,18 +18,18 @@ import java.util.stream.Stream;
 @Mixin(StatTotals.class)
 public class StatTotalsMixin implements StatTotalsMixinInterface {
 
-    @Shadow private int bailed;
-    @Shadow private int failed;
-    @Shadow private int completed;
-    @Shadow private int experience;
-    @Shadow @Final private Object2FloatMap<ResourceLocation> damageReceived;
-    @Shadow @Final private Object2FloatMap<ResourceLocation> damageDealt;
-    @Shadow @Final private Object2IntMap<ResourceLocation> entitiesKilled;
-    @Shadow private int treasureRoomsOpened;
-    @Shadow @Final private Object2IntMap<ResourceLocation> minedBlocks;
-    @Shadow @Final private Object2IntMap<VaultChestType> trappedChests;
-    @Shadow @Final private Object2IntMap<StatTotals.ChestKey> lootedChests;
-    @Shadow private int crystalsCrafted;
+    @Shadow(remap = false) private int bailed;
+    @Shadow(remap = false) private int failed;
+    @Shadow(remap = false) private int completed;
+    @Shadow(remap = false) private int experience;
+    @Shadow(remap = false) @Final private Object2FloatMap<ResourceLocation> damageReceived;
+    @Shadow(remap = false) @Final private Object2FloatMap<ResourceLocation> damageDealt;
+    @Shadow(remap = false) @Final private Object2IntMap<ResourceLocation> entitiesKilled;
+    @Shadow(remap = false) private int treasureRoomsOpened;
+    @Shadow(remap = false) @Final private Object2IntMap<ResourceLocation> minedBlocks;
+    @Shadow(remap = false) @Final private Object2IntMap<VaultChestType> trappedChests;
+    @Shadow(remap = false) @Final private Object2IntMap<StatTotals.ChestKey> lootedChests;
+    @Shadow(remap = false) private int crystalsCrafted;
 
 
 

@@ -25,7 +25,7 @@ public class PlayerStatisticsCollector$VaultRunsSnapshotMixin {
      * @author KoromaruKoruko
      * @reason Modify to use new snapshot storage
      */
-    @Overwrite
+    @Overwrite(remap = false)
     public static PlayerStatisticsCollector.VaultRunsSnapshot ofPlayer(ServerPlayer sPlayer) {
         PlayerStatisticsCollector.VaultRunsSnapshot data = new PlayerStatisticsCollector.VaultRunsSnapshot();
         final var vaultSnapshots = (VaultSnapshotsMixinInterface)VaultSnapshots.get(VaultFixes.getServer());

@@ -21,7 +21,7 @@ import java.util.UUID;
 
 @Mixin(VaultSnapshot.class)
 public class VaultSnapshotMixin implements VaultSnapshotMixinInterface {
-    @Shadow private Vault start;
+    @Shadow(remap = false) private Vault start;
     @Unique
     Boolean vaultFixes$IsDirty = false;
 

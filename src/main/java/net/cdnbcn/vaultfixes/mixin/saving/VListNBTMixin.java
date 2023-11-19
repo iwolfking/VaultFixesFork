@@ -11,8 +11,8 @@ import java.util.function.Function;
 
 @Mixin(VListNBT.class)
 public class VListNBTMixin<T, N extends Tag> implements VListNBTMixinInterface<T, N> {
-    @Shadow @Final private Function<T, N> write;
-    @Shadow @Final private Function<N, T> read;
+    @Shadow(remap = false) @Final private Function<T, N> write;
+    @Shadow(remap = false) @Final private Function<N, T> read;
 
 
     @Override

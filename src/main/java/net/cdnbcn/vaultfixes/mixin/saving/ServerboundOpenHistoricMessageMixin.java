@@ -27,7 +27,7 @@ public class ServerboundOpenHistoricMessageMixin {
      * @author KoromaruKoruko
      * @reason Modify to use new Snapshot Storage Method
      */
-    @Overwrite
+    @Overwrite(remap = false)
     public static void handle(ServerboundOpenHistoricMessage message, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(
