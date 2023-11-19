@@ -22,6 +22,7 @@ import java.util.UUID;
 @Mixin(VaultSnapshot.class)
 public class VaultSnapshotMixin implements VaultSnapshotMixinInterface {
     @Shadow(remap = false) private Vault start;
+    @Shadow(remap = false) private Vault end;
     @Unique
     Boolean vaultFixes$IsDirty = false;
 
@@ -35,7 +36,11 @@ public class VaultSnapshotMixin implements VaultSnapshotMixinInterface {
     public void vaultFixes$MarkNeedsSaving() { vaultFixes$IsDirty = true; }
     @Override
     public Optional<UUID> vaultFixes$getVaultID() {
-        return start == null ? Optional.empty() : Optional.of(start.get(Vault.ID));
+        return start == null
+                ? (end == null
+                    ? Optional.empty()
+                    : Optional.of(end.get(Vault.ID))
+                ) : Optional.of(start.get(Vault.ID));
     }
 
 
@@ -52,13 +57,14 @@ public class VaultSnapshotMixin implements VaultSnapshotMixinInterface {
     @Inject(method = "setEnd", at = @At("RETURN"), remap = false)
     private void setEnd(Vault end, CallbackInfoReturnable<VaultSnapshot> cir) {
         vaultFixes$IsDirty = true;
-        final var snapshotId = end.get(Vault.ID);
+        @SuppressWarnings("OptionalGetWithoutIsPresent")
+        final var snapshotId = vaultFixes$getVaultID().get();
         final var vaultSnapshots = (VaultSnapshotsMixinInterface)VaultSnapshots.get(VaultFixes.getServer());
         end.get(Vault.STATS).getMap().keySet().forEach(id -> vaultSnapshots.vaultFixes$addForPlayer(id, snapshotId));
     }
 
     @Inject(method = "readBits", at = @At("RETURN"), remap = false)
     private void readBits(BitBuffer buffer, CallbackInfo ci) {
-        vaultFixes$IsDirty = false;
+        vaultFixes$IsDirty = true;
     }
 }

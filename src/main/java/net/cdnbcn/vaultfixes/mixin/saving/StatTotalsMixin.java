@@ -39,9 +39,10 @@ public class StatTotalsMixin implements StatTotalsMixinInterface {
      */
     @Overwrite(remap = false)
     public static StatTotals of(UUID playerUuid) {
-        final var vaultSnapshots = VaultSnapshots.get(VaultFixes.getServer());
-        Stream<Vault> vaults = ((VaultSnapshotsMixinInterface)vaultSnapshots).vaultFixes$getAllForPlayer(playerUuid)
-                .map(((VaultSnapshotsMixinInterface) vaultSnapshots)::vaultFixes$getSnapshot)
+        final var vaultSnapshots = (VaultSnapshotsMixinInterface)VaultSnapshots.get(VaultFixes.getServer());
+        Stream<Vault> vaults = vaultSnapshots.vaultFixes$getAllForPlayer(playerUuid)
+                .map(vaultSnapshots::vaultFixes$getSnapshot)
+                .filter(Objects::nonNull)
                 .map(VaultSnapshot::getEnd)
                 .filter(Objects::nonNull);
 

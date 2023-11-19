@@ -11,11 +11,14 @@ import net.cdnbcn.vaultfixes.mixin_interfaces.saving.ServerPlayerMixinInterface;
 import net.cdnbcn.vaultfixes.mixin_interfaces.saving.VListNBTMixinInterface;
 import net.cdnbcn.vaultfixes.mixin_interfaces.saving.VaultSnapshotMixinInterface;
 import net.cdnbcn.vaultfixes.mixin_interfaces.saving.VaultSnapshotsMixinInterface;
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.nbt.*;
 import net.minecraft.server.dedicated.DedicatedServerProperties;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +32,7 @@ import java.util.stream.Stream;
 public class VaultSnapshotsMixin implements VaultSnapshotsMixinInterface {
 
     @Unique
-    private final HashMap<UUID, AccessTimedData<VaultSnapshot>> vaultFixes$cache = new HashMap<>();
+    private static final HashMap<UUID, AccessTimedData<VaultSnapshot>> vaultFixes$cache = new HashMap<>();
 
     @Final
     @Shadow(remap = false)
@@ -52,11 +55,9 @@ public class VaultSnapshotsMixin implements VaultSnapshotsMixinInterface {
                     final var id = optid.get();
 
                     vaultFixes$cache.put(id, new AccessTimedData<>(snapshot));
-                    iter.remove();
-
                     vaultFixes$writeFile(vaultFixes$getFileFor(id), snapshot);
+                    iter.remove();
                 }
-                ((VaultSnapshotMixinInterface)snapshot).vaultFixes$MarkSaved();
             }
         }
 
@@ -70,10 +71,10 @@ public class VaultSnapshotsMixin implements VaultSnapshotsMixinInterface {
                 cacheIter.remove();
 
             final VaultSnapshot rawSnapshot = snapshot.getNoAccess();
-            if(((VaultSnapshotMixinInterface)rawSnapshot).vaultFixes$NeedsSave()) {
-                final var id = ((VaultSnapshotMixinInterface)rawSnapshot).vaultFixes$getVaultID();
-                id.ifPresent(uuid -> vaultFixes$writeFile(vaultFixes$getFileFor(uuid), rawSnapshot));
-            }
+            if(((VaultSnapshotMixinInterface)rawSnapshot).vaultFixes$NeedsSave())
+                ((VaultSnapshotMixinInterface)rawSnapshot).vaultFixes$getVaultID()
+                    .ifPresent(uuid -> vaultFixes$writeFile(vaultFixes$getFileFor(uuid), rawSnapshot));
+
         }
 
         nbt.put("snapshots", snapshots.serializeNBT());
@@ -84,10 +85,8 @@ public class VaultSnapshotsMixin implements VaultSnapshotsMixinInterface {
      * @author KoromaruKoruko
      * @reason Modify Save and Load
      */
-    @Overwrite(remap = false)
-    public void load(CompoundTag nbt) {
-        this.snapshots.deserializeNBT(nbt.getList("snapshots", 12));
-
+    @Inject(method = "load", at = @At("RETURN"), remap = false)
+    public void load(CompoundTag nbt, CallbackInfo ci) {
         // mark any snapshot with an ID as dirty, so that it gets pushed into its respective file
         for (VaultSnapshot val : snapshots) {
             if (((VaultSnapshotMixinInterface) val).vaultFixes$getVaultID().isPresent())
@@ -95,7 +94,10 @@ public class VaultSnapshotsMixin implements VaultSnapshotsMixinInterface {
         }
     }
 
-
+    @Inject(method = "create", at=@At("RETURN"),remap = false)
+    private static void create(CompoundTag tag, CallbackInfoReturnable<VaultSnapshots> cir) {
+        VaultFixes.getLogger().info("Creating VaultSnapshots DataStorage");
+    }
 
     /**
      * @author KoromaruKoruko
@@ -225,6 +227,7 @@ public class VaultSnapshotsMixin implements VaultSnapshotsMixinInterface {
         if (inCache != null)
             return inCache.get();
 
+
         final var fileLoc = vaultFixes$getFileFor(id);
         if (fileLoc.exists())
         {
@@ -233,12 +236,15 @@ public class VaultSnapshotsMixin implements VaultSnapshotsMixinInterface {
             return snapshot;
         }
 
-        for(VaultSnapshot snapshot : snapshots){
+
+        for (VaultSnapshot snapshot : snapshots) {
             final var sid = ((VaultSnapshotMixinInterface)snapshot).vaultFixes$getVaultID();
-            if (sid.isPresent() && sid.get() == id)
+            if (sid.isPresent() && sid.get() == id) {
                 return snapshot;
+            }
         }
 
+        //VaultFixes.getLogger().warn("failed to fetch snapshot for "+id);
         return null;
     }
 
