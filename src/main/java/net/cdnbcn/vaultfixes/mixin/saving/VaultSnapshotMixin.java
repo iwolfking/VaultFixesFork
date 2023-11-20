@@ -65,6 +65,6 @@ public class VaultSnapshotMixin implements VaultSnapshotMixinInterface {
 
     @Inject(method = "readBits", at = @At("RETURN"), remap = false)
     private void readBits(BitBuffer buffer, CallbackInfo ci) {
-        vaultFixes$IsDirty = true;
+        vaultFixes$IsDirty = false;
     }
 }
