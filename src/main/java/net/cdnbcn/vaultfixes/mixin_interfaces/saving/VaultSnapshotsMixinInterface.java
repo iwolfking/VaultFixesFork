@@ -1,5 +1,6 @@
 package net.cdnbcn.vaultfixes.mixin_interfaces.saving;
 
+import iskallia.vault.core.vault.Vault;
 import iskallia.vault.core.vault.stat.VaultSnapshot;
 
 import java.util.UUID;
@@ -13,5 +14,7 @@ public interface VaultSnapshotsMixinInterface {
     void vaultFixes$setAllForPlayer(UUID playerId, Stream<UUID> snapshotIds);
     void vaultFixes$addForPlayer(UUID player, UUID snapshotId);
 
+
+    VaultSnapshot vaultFixes$createSnapshot(Vault vault);
     VaultSnapshot vaultFixes$getSnapshot(UUID id);
 }

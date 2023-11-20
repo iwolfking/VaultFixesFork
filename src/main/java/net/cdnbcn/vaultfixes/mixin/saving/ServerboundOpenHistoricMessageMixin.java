@@ -54,10 +54,11 @@ public class ServerboundOpenHistoricMessageMixin {
                         }); // get last 60 (we grab extra in case there are uncompleted vaults)
 
                         ArrayList<VaultSnapshot> result = Stream.concat(
-                                    xpos.get()==inuse.get() ? Stream.empty() : Arrays.stream(prev60, xpos.get()-1, inuse.get()),
+                                    xpos.get()==inuse.get() ? Stream.empty() : Arrays.stream(prev60, xpos.get(), inuse.get()),
                                     xpos.get()==0 ? Stream.empty() : Arrays.stream(prev60, 0, xpos.get())
                                 )
                                 .map(vaultSnapshots::vaultFixes$getSnapshot)
+                                .filter(Objects::nonNull)
                                 .filter(snapshot -> snapshot.getEnd() != null)
                                 .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
                         Collections.reverse(result);

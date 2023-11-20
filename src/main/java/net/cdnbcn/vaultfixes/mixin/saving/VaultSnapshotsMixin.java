@@ -108,7 +108,6 @@ public class VaultSnapshotsMixin implements VaultSnapshotsMixinInterface {
         return ((VaultSnapshotsMixinInterface)VaultSnapshots.get(ServerLifecycleHooks.getCurrentServer())).vaultFixes$getSnapshot(vaultId);
     }
 
-
     /**
      * @author KoromaruKoruko
      * @reason Modify Save and Load, please don't call this anymore!
@@ -131,6 +130,46 @@ public class VaultSnapshotsMixin implements VaultSnapshotsMixinInterface {
         VaultFixes.getLogger().warn(sb.toString());
 
         return ((VaultSnapshotsMixinInterface)VaultSnapshots.get(ServerLifecycleHooks.getCurrentServer())).vaultFixes$getAllSnapshots().toList();
+    }
+
+
+    /**
+     * @author KoromaruKoruko
+     * @reason Modify Save and Load, please don't call this anymore!
+     */
+    @Overwrite(remap = false)
+    public static void onVaultStarted(Vault vault) {
+        final var rawVaultSnapshots = VaultSnapshots.get(VaultFixes.getServer());
+        final var vaultSnapshots = ((VaultSnapshotsMixinInterface)rawVaultSnapshots);
+        vaultSnapshots.vaultFixes$createSnapshot(vault);
+        rawVaultSnapshots.setDirty();
+    }
+
+    /**
+     * @author KoromaruKoruko
+     * @reason Modify Save and Load, please don't call this anymore!
+     */
+    @Overwrite(remap = false)
+    public static void onVaultEnded(Vault vault) {
+        final var rawVaultSnapshots = VaultSnapshots.get(VaultFixes.getServer());
+        final var vaultSnapshots = ((VaultSnapshotsMixinInterface)rawVaultSnapshots);
+        final var vaultId = vault.get(Vault.ID);
+
+        vaultSnapshots.vaultFixes$getSnapshot(vaultId).setEnd(vault);
+
+        vault.get(Vault.STATS).getMap().keySet().forEach(id -> vaultSnapshots.vaultFixes$addForPlayer(id, vaultId));
+
+        rawVaultSnapshots.setDirty();
+    }
+
+    @Override
+    public VaultSnapshot vaultFixes$createSnapshot(Vault vault) {
+        final var rawSnapshot = new VaultSnapshot(vault.get(Vault.VERSION));
+        final var snapshot = ((VaultSnapshotMixinInterface)rawSnapshot);
+        rawSnapshot.setStart(vault);
+        //noinspection OptionalGetWithoutIsPresent
+        vaultFixes$cache.putIfAbsent(snapshot.vaultFixes$getVaultID().get(), new AccessTimedData<>(rawSnapshot));
+        return rawSnapshot;
     }
 
     @Unique
