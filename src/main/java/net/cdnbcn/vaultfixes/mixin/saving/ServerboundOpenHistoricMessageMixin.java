@@ -58,8 +58,7 @@ public class ServerboundOpenHistoricMessageMixin {
                                     xpos.get()==0 ? Stream.empty() : Arrays.stream(prev60, 0, xpos.get())
                                 )
                                 .map(vaultSnapshots::vaultFixes$getSnapshot)
-                                .filter(Objects::nonNull)
-                                .filter(snapshot -> snapshot.getEnd() != null)
+                                .filter(snapshot -> snapshot != null && snapshot.getEnd() != null)
                                 .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
                         Collections.reverse(result);
 
@@ -67,6 +66,7 @@ public class ServerboundOpenHistoricMessageMixin {
                             .stream()
                             .filter(id -> result.stream().noneMatch(snapshot -> snapshot.getEnd().get(Vault.ID) == id))
                             .map(vaultSnapshots::vaultFixes$getSnapshot)
+                            .filter(Objects::nonNull)
                             .forEachOrdered(result::add)
                         ;
 
