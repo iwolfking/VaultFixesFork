@@ -20,7 +20,7 @@ class TemporalMapCache<K, V : ISavableData>(private val lifeTimeSeconds: Long, p
     companion object {
         private val timer = Timer("TemporalMapCacheCleanupThread",true)
         init {
-            timer.scheduleAtFixedRate(::doCleanUp as TimerTask, 10*1000L, 10*1000L)
+            timer.scheduleAtFixedRate(DelegatingTimerTask(::doCleanUp), 10*1000L, 10*1000L)
             Runtime.getRuntime().addShutdownHook(Thread(::doCleanUpAll, "TemporalShutdownHook"))
         }
 

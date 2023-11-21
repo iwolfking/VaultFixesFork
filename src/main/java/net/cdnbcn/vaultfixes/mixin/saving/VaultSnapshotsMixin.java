@@ -119,35 +119,77 @@ public class VaultSnapshotsMixin implements VaultSnapshotsMixinInterface {
     @Override
     public Stream<VaultSnapshot> vaultFixes$getAllSnapshots() {
         // yes It's ugly, and yes I don't want it to be called AT ALL
+        //noinspection DataFlowIssue
         return Stream.concat(
                 snapshots.stream(),
-                Arrays.stream(Objects.requireNonNull(vaultFixes$getSnapshotsSaveFolder().toFile().listFiles()))
-                    .map(file -> {
-                        final var fileName = file.getName();
-                        if(!fileName.startsWith("snapshot_") | !fileName.endsWith(".nbt"))
-                            return null;
-                        try {
-                             final var id = UUID.fromString(fileName.substring("snapshot_".length(), fileName.length() - 4));
-                             final var inCache = vaultFixes$cache.getOrDefault(id, null);
-                             if(inCache != null)
-                                 return  (VaultSnapshot)inCache;
-                             return vaultFixes$readFile(file);
-                        }catch (IllegalArgumentException e) {
-                            return null;
-                        }
-                    })
-                    .filter(Objects::nonNull)
-                );
+                vaultFixes$readSnapshots(
+                    Arrays.stream(vaultFixes$getSnapshotsSaveFolder().toFile().listFiles())
+                        .parallel()
+                        .map(file -> {
+                            final var fileName = file.getName();
+                            if(!fileName.startsWith("snapshot_") | !fileName.endsWith(".nbt"))
+                                return null;
+
+                            return UUID.fromString(fileName.substring("snapshot_".length(), fileName.length() - 4));
+                        })
+                        .filter(Objects::nonNull)
+                )
+        );
     }
+
+    @Override
+    public Stream<VaultSnapshot> vaultFixes$readSnapshots(Stream<UUID> snapshots) {
+        @SuppressWarnings("unchecked")
+        final var readFn = ((VListNBTMixinInterface<VaultSnapshot, LongArrayTag>)this.snapshots).vaultFixes$getRead();
+        //noinspection DataFlowIssue
+        return snapshots.parallel()
+                .map((id) -> {
+                    final var inCache = vaultFixes$cache.getOrDefault(id, null);
+                    if (inCache != null)
+                        return inCache;
+
+                    final var file = vaultFixes$getFileFor(id);
+                    if(file.exists())
+                    {
+                        try {
+                            return NbtIo.read(file);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+
+                    for (VaultSnapshot snapshot : this.snapshots) {
+                        final var sid = ((VaultSnapshotMixinInterface)snapshot).vaultFixes$getVaultID();
+                        if (sid.isPresent() && sid.get() == id) {
+                            return snapshot;
+                        }
+                    }
+
+                    return null;
+                })
+                .toList()
+                .stream()
+                .map(obj -> {
+                   if(obj instanceof CompoundTag tag) {
+                       final var rawSnapshot = readFn.apply((LongArrayTag)tag.get("data"));
+                       final var snapshot = (VaultSnapshotMixinInterface)rawSnapshot;
+                       //noinspection OptionalGetWithoutIsPresent
+                       vaultFixes$cache.put(snapshot.vaultFixes$getVaultID().get(), snapshot);
+                       return rawSnapshot;
+                   }
+                   else
+                       return (VaultSnapshot)obj;
+                });
+    }
+
     @Override
     public Stream<UUID> vaultFixes$getAllForPlayer(UUID playerId) { return PlayerSaveManger.getPlayerData(playerId).vaultFixes$getAllSnapshots(); }
     @Override
     public ArrayList<UUID> vaultFixes$compileAllForPlayer(UUID playerId) {
-        return vaultFixes$getAllSnapshots().parallel()
+        return vaultFixes$getAllSnapshots()
                 .filter(snapshot ->
-                        Objects.nonNull(snapshot)
-                        && Objects.nonNull(snapshot.getStart())
-                        && snapshot.getStart().get(Vault.STATS).getMap().containsKey(playerId)
+                        snapshot.getEnd() != null
+                        && snapshot.getEnd().get(Vault.STATS).getMap().containsKey(playerId)
                 )
                 .map(snapshot -> snapshot.getStart().get(Vault.ID))
                 .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
@@ -184,7 +226,6 @@ public class VaultSnapshotsMixin implements VaultSnapshotsMixinInterface {
         VaultFixes.getLogger().error("VaultSnapshots: failed to fetch snapshot for "+id);
         return null;
     }
-
 
     @Unique
     private void vaultFixes$saveSnapshot(VaultSnapshotMixinInterface snapshot) {

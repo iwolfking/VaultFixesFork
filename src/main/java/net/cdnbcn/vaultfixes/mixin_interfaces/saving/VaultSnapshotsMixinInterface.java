@@ -16,6 +16,8 @@ public interface VaultSnapshotsMixinInterface {
      */
     Stream<VaultSnapshot> vaultFixes$getAllSnapshots();
 
+    Stream<VaultSnapshot> vaultFixes$readSnapshots(Stream<UUID> snapshots);
+
     Stream<UUID> vaultFixes$getAllForPlayer(UUID playerId);
     void vaultFixes$addForPlayer(UUID player, UUID snapshotId);
 

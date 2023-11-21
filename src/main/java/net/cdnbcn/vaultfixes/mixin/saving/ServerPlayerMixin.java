@@ -37,7 +37,18 @@ public class ServerPlayerMixin implements ServerPlayerMixinInterface, IVaultPlay
     @Override
     public @NotNull ArrayList<UUID> vaultFixes$getSnapshots() { return vaultFixes$snapshots; }
     @Override
-    public Stream<UUID> vaultFixes$getAllSnapshots() { return vaultFixes$snapshots.parallelStream(); }
+    public Stream<UUID> vaultFixes$getAllSnapshots() { return vaultFixes$snapshots.stream(); }
+
+    public Stream<UUID> vaultFixes$getLastSnapshots(int amount) {
+        int to = vaultFixes$snapshots.size();
+        int from = to > amount
+                ? to-amount
+                : 0;
+
+        return to == from
+                ? Stream.empty()
+                : vaultFixes$snapshots.subList(from, to).stream();
+    }
     @Override
     public void vaultFixes$addSnapshot(UUID snapshotId) {
         vaultFixes$snapshots.add(snapshotId);
