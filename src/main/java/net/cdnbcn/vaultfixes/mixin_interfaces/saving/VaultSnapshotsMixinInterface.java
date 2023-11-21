@@ -3,18 +3,24 @@ package net.cdnbcn.vaultfixes.mixin_interfaces.saving;
 import iskallia.vault.core.vault.Vault;
 import iskallia.vault.core.vault.stat.VaultSnapshot;
 
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.stream.Stream;
 
 public interface VaultSnapshotsMixinInterface {
+    VaultSnapshot vaultFixes$getSnapshot(UUID id);
+
+    /** Gets all Snapshots (SLOW DO NOT USE)
+     *
+     * @return all VaultSnapshot(s)
+     */
     Stream<VaultSnapshot> vaultFixes$getAllSnapshots();
 
     Stream<UUID> vaultFixes$getAllForPlayer(UUID playerId);
-    Stream<UUID> vaultFixes$loadAllForPlayer(UUID playerId);
-    void vaultFixes$setAllForPlayer(UUID playerId, Stream<UUID> snapshotIds);
     void vaultFixes$addForPlayer(UUID player, UUID snapshotId);
 
 
-    VaultSnapshot vaultFixes$createSnapshot(Vault vault);
-    VaultSnapshot vaultFixes$getSnapshot(UUID id);
+    @SuppressWarnings("unused")
+    ArrayList<UUID> vaultFixes$compileAllForPlayer(UUID playerId);
+    void vaultFixes$createSnapshot(Vault vault);
 }

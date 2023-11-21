@@ -26,11 +26,11 @@ public class VaultSnapshotMixin implements VaultSnapshotMixinInterface {
 
 
     @Override
-    public Boolean vaultFixes$NeedsSave() { return vaultFixes$IsDirty; }
+    public boolean vaultFixes$isDirty() { return vaultFixes$IsDirty; }
     @Override
-    public void vaultFixes$MarkSaved() { vaultFixes$IsDirty = false; }
+    public void vaultFixes$MarkClean() { vaultFixes$IsDirty = false; }
     @Override
-    public void vaultFixes$MarkNeedsSaving() { vaultFixes$IsDirty = true; }
+    public void vaultFixes$MarkDirty() { vaultFixes$IsDirty = true; }
     @Override
     public Optional<UUID> vaultFixes$getVaultID() {
         return start == null
