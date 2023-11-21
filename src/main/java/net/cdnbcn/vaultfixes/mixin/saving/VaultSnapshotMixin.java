@@ -4,10 +4,7 @@ import iskallia.vault.core.Version;
 import iskallia.vault.core.net.BitBuffer;
 import iskallia.vault.core.vault.Vault;
 import iskallia.vault.core.vault.stat.VaultSnapshot;
-import iskallia.vault.world.data.VaultSnapshots;
-import net.cdnbcn.vaultfixes.VaultFixes;
 import net.cdnbcn.vaultfixes.mixin_interfaces.saving.VaultSnapshotMixinInterface;
-import net.cdnbcn.vaultfixes.mixin_interfaces.saving.VaultSnapshotsMixinInterface;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -57,10 +54,6 @@ public class VaultSnapshotMixin implements VaultSnapshotMixinInterface {
     @Inject(method = "setEnd", at = @At("RETURN"), remap = false)
     private void setEnd(Vault end, CallbackInfoReturnable<VaultSnapshot> cir) {
         vaultFixes$IsDirty = true;
-        @SuppressWarnings("OptionalGetWithoutIsPresent")
-        final var snapshotId = vaultFixes$getVaultID().get();
-        final var vaultSnapshots = (VaultSnapshotsMixinInterface)VaultSnapshots.get(VaultFixes.getServer());
-        end.get(Vault.STATS).getMap().keySet().forEach(id -> vaultSnapshots.vaultFixes$addForPlayer(id, snapshotId));
     }
 
     @Inject(method = "readBits", at = @At("RETURN"), remap = false)
