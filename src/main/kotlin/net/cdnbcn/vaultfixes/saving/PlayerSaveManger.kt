@@ -41,25 +41,23 @@ object PlayerSaveManger {
         val player = serverPlayer as IVaultPlayerDataRW
 
         // load player data, from offlineCache else from disc
-        synchronized(offlinePlayerMap) {
-            val offlineData = offlinePlayerMap.remove(serverPlayer.uuid)
-            if (offlineData != null)
-                copyData(offlineData, player)
-            else
-                loadData(readNbt(serverPlayer.uuid), player)
-        }
+        val offlineData = offlinePlayerMap.remove(serverPlayer.uuid)
+        if (offlineData != null)
+            copyData(offlineData, player)
+        else
+            loadData(readNbt(serverPlayer.uuid), player)
+
     }
     @JvmStatic
     private fun onPlayerLeave(event: PlayerLoggedOutEvent) {
         val serverPlayer = event.player as ServerPlayer
         val player = serverPlayer as IVaultPlayerDataRW
 
-        synchronized(offlinePlayerMap) {
-            val offlineData = OfflineVaultPlayerData(serverPlayer.uuid)
-            copyData(player, offlineData)
-            writeNbt(serverPlayer.uuid, saveData(player))
-            offlinePlayerMap[serverPlayer.uuid] = offlineData
-        }
+
+        val offlineData = OfflineVaultPlayerData(serverPlayer.uuid)
+        copyData(player, offlineData)
+        writeNbt(serverPlayer.uuid, saveData(player))
+        offlinePlayerMap[serverPlayer.uuid] = offlineData
     }
 
     @JvmStatic
@@ -69,19 +67,16 @@ object PlayerSaveManger {
     @JvmStatic
     fun getPlayerData(playerId: UUID): IVaultPlayerData {
         val playerList = VaultFixes.getServer().playerList
-        synchronized(offlinePlayerMap) {
             val onlinePlayer = playerList.getPlayer(playerId)
-            if(onlinePlayer != null)
+            if (onlinePlayer != null)
                 return getPlayerData(onlinePlayer)
 
-            val offlineData = offlinePlayerMap.getOrDefault(playerId, null)
-            if(offlineData != null)
-                return offlineData
-
-            val offlinePlayerData = OfflineVaultPlayerData(playerId)
-            loadData(readNbt(playerId), offlinePlayerData)
-            offlinePlayerMap[playerId] = offlinePlayerData
-            return offlinePlayerData
+        synchronized(offlinePlayerMap) {
+            return offlinePlayerMap.getOrPut(playerId) {
+                val offlinePlayerData = OfflineVaultPlayerData(playerId)
+                loadData(readNbt(playerId), offlinePlayerData)
+                offlinePlayerData
+            }
         }
     }
 
