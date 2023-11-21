@@ -19,8 +19,9 @@ import kotlin.io.path.createDirectories
 
 
 object PlayerSaveManger {
-
     private lateinit var PlayerDataFolder: Path
+    private val offlinePlayerMap = TemporalMapCache<UUID, IVaultPlayerDataRW>(60, {}, ::saveDataToDisc)
+
 
     @JvmStatic
     internal fun initialize() {
@@ -30,11 +31,28 @@ object PlayerSaveManger {
         PlayerDataFolder = VaultFixes.getDataDir().resolve("playerdata").createDirectories()
     }
 
-    private val offlinePlayerMap = TemporalMapCache<UUID, IVaultPlayerDataRW>(60, {}, ::saveOffline)
-
-    private fun saveOffline(offlineData: IVaultPlayerDataRW){
-        writeNbt(offlineData.`vaultFixes$getPlayerUUID`(), saveData(offlineData))
+    @JvmStatic
+    fun getPlayerData(player: ServerPlayer): IVaultPlayerData {
+        return player as IVaultPlayerData
     }
+    @JvmStatic
+    fun getPlayerData(playerId: UUID): IVaultPlayerData {
+        val playerList = VaultFixes.getServer().playerList
+        val onlinePlayer = playerList.getPlayer(playerId)
+        if (onlinePlayer != null)
+            return getPlayerData(onlinePlayer)
+
+        synchronized(offlinePlayerMap) {
+            return offlinePlayerMap.getOrPut(playerId) {
+                val offlinePlayerData = OfflineVaultPlayerData(playerId)
+                loadData(readNbt(playerId), offlinePlayerData)
+                offlinePlayerData
+            }
+        }
+    }
+
+
+    //region events
     @JvmStatic
     private fun onPlayerJoin(event: PlayerLoggedInEvent) {
         val serverPlayer = event.player as ServerPlayer
@@ -46,7 +64,6 @@ object PlayerSaveManger {
             copyData(offlineData, player)
         else
             loadData(readNbt(serverPlayer.uuid), player)
-
     }
     @JvmStatic
     private fun onPlayerLeave(event: PlayerLoggedOutEvent) {
@@ -59,27 +76,18 @@ object PlayerSaveManger {
         writeNbt(serverPlayer.uuid, saveData(player))
         offlinePlayerMap[serverPlayer.uuid] = offlineData
     }
-
     @JvmStatic
-    fun getPlayerData(player: ServerPlayer): IVaultPlayerData {
-        return player as IVaultPlayerData
+    internal fun notifyPlayerSaving(player: ServerPlayer) {
+        val data = getPlayerData(player)
+        if(data.`vaultFixes$isDirty`())
+            saveDataToDisc(data as IVaultPlayerDataRW)
     }
-    @JvmStatic
-    fun getPlayerData(playerId: UUID): IVaultPlayerData {
-        val playerList = VaultFixes.getServer().playerList
-            val onlinePlayer = playerList.getPlayer(playerId)
-            if (onlinePlayer != null)
-                return getPlayerData(onlinePlayer)
+    //endregion events
 
-        synchronized(offlinePlayerMap) {
-            return offlinePlayerMap.getOrPut(playerId) {
-                val offlinePlayerData = OfflineVaultPlayerData(playerId)
-                loadData(readNbt(playerId), offlinePlayerData)
-                offlinePlayerData
-            }
-        }
+    //region Data Management
+    private fun saveDataToDisc(data: IVaultPlayerDataRW){
+        writeNbt(data.`vaultFixes$getPlayerUUID`(), saveData(data))
     }
-
     private fun getFileLoc(playerId: UUID) : File {
         return PlayerDataFolder.resolve("$playerId.nbt.dat").toFile()
     }
@@ -94,8 +102,6 @@ object PlayerSaveManger {
         val file = getFileLoc(playerId)
         NbtIo.writeCompressed(tag, file)
     }
-
-
     private fun copyData(from: IVaultPlayerDataRW, into: IVaultPlayerDataRW) {
         if (from.`vaultFixes$isDirty`()) into.`vaultFixes$markDirty`() else into.`vaultFixes$markClean`()
         into.`vaultFixes$setSnapshots`(from.`vaultFixes$getSnapshots`())
@@ -131,5 +137,5 @@ object PlayerSaveManger {
         data.`vaultFixes$markClean`()
         return tag
     }
-
+    //endregion Data Management
 }

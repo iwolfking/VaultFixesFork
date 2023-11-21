@@ -2,10 +2,15 @@ package net.cdnbcn.vaultfixes.mixin.saving;
 
 import net.cdnbcn.vaultfixes.mixin_interfaces.saving.IVaultPlayerDataRW;
 import net.cdnbcn.vaultfixes.mixin_interfaces.saving.ServerPlayerMixinInterface;
+import net.cdnbcn.vaultfixes.saving.PlayerSaveManger;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -19,6 +24,10 @@ public class ServerPlayerMixin implements ServerPlayerMixinInterface, IVaultPlay
     @Override
     public UUID vaultFixes$getPlayerUUID() { return ((ServerPlayer)(Object)this).getUUID(); }
 
+    @Inject(method="addAdditionalSaveData", at = @At("HEAD"))
+    private void addAdditionalSaveData(CompoundTag tag, CallbackInfo ci) {
+        PlayerSaveManger.notifyPlayerSaving$vaultfixes((ServerPlayer)(Object)this);
+    }
 
     //region Snapshots
     @Unique
@@ -35,6 +44,7 @@ public class ServerPlayerMixin implements ServerPlayerMixinInterface, IVaultPlay
         vaultFixes$isDirty = true;
     }
     //endregion Snapshots
+
 
     //region IsDirty
     @Unique
