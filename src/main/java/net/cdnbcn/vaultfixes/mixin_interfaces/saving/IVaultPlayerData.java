@@ -7,11 +7,11 @@ import java.util.stream.Stream;
 
 public interface IVaultPlayerData extends ISavableData {
     @SuppressWarnings("unused")
-    Boolean vaultFixes$isOnline();
-    @SuppressWarnings("unused")
     UUID vaultFixes$getPlayerUUID();
 
     Stream<UUID> vaultFixes$getAllSnapshots();
+    Stream<UUID> vaultFixes$getLastSnapshots(int amount);
     void vaultFixes$addSnapshot(UUID snapshotId);
+
 
 }

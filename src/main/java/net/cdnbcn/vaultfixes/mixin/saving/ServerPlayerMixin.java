@@ -1,77 +1,60 @@
 package net.cdnbcn.vaultfixes.mixin.saving;
 
-import net.cdnbcn.vaultfixes.mixin_interfaces.saving.IVaultPlayerDataRW;
+import com.ibm.icu.impl.Assert;
+import net.cdnbcn.vaultfixes.mixin_interfaces.saving.IVaultPlayerData;
 import net.cdnbcn.vaultfixes.mixin_interfaces.saving.ServerPlayerMixinInterface;
 import net.cdnbcn.vaultfixes.saving.PlayerSaveManger;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.ArrayList;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Stream;
 
 @Mixin(ServerPlayer.class)
-public class ServerPlayerMixin implements ServerPlayerMixinInterface, IVaultPlayerDataRW {
-
-    @Override
-    public Boolean vaultFixes$isOnline() { return true; }
-    @Override
-    public UUID vaultFixes$getPlayerUUID() { return ((ServerPlayer)(Object)this).getUUID(); }
+public class ServerPlayerMixin implements ServerPlayerMixinInterface {
 
     @Inject(method="addAdditionalSaveData", at = @At("HEAD"))
     private void addAdditionalSaveData(CompoundTag tag, CallbackInfo ci) {
         PlayerSaveManger.notifyPlayerSaving$vaultfixes((ServerPlayer)(Object)this);
     }
 
-    //region Snapshots
     @Unique
-    ArrayList<UUID> vaultFixes$snapshots;
-    @Override
-    public void vaultFixes$setSnapshots(@NotNull ArrayList<UUID> snapshots) { this.vaultFixes$snapshots = Objects.requireNonNull(snapshots); }
-    @Override
-    public @NotNull ArrayList<UUID> vaultFixes$getSnapshots() { return Objects.requireNonNull(vaultFixes$snapshots); }
-    @Override
-    public Stream<UUID> vaultFixes$getAllSnapshots() { return vaultFixes$snapshots.stream(); }
+    @Nullable
+    private IVaultPlayerData vaultFixes$vaultPlayerData = null;
 
+    @Override
+    public UUID vaultFixes$getPlayerUUID() { return vaultFixes$getVaultPlayerData().vaultFixes$getPlayerUUID(); }
+
+    @Unique
+    private IVaultPlayerData vaultFixes$getVaultPlayerData(){
+        if(vaultFixes$vaultPlayerData == null){
+            vaultFixes$vaultPlayerData = PlayerSaveManger.getPlayerDataOnlineDirect((ServerPlayer)(Object)this);
+            Assert.assrt("VaultPlayerData.playerUUID != Player.uuid", vaultFixes$vaultPlayerData.vaultFixes$getPlayerUUID() == ((ServerPlayer)(Object)this).getUUID());
+        }
+        return vaultFixes$vaultPlayerData;
+    }
+
+
+    //region Snapshots
+    @Override
+    public Stream<UUID> vaultFixes$getAllSnapshots() { return vaultFixes$getVaultPlayerData().vaultFixes$getAllSnapshots(); }
     public Stream<UUID> vaultFixes$getLastSnapshots(int amount) {
-        int to = vaultFixes$snapshots.size();
-        int from = to > amount
-                ? to-amount
-                : 0;
-
-        return to == from
-                ? Stream.empty()
-                : vaultFixes$snapshots.subList(from, to).stream();
+        return vaultFixes$getVaultPlayerData().vaultFixes$getLastSnapshots(amount);
     }
     @Override
     public void vaultFixes$addSnapshot(UUID snapshotId) {
-        vaultFixes$snapshots.add(snapshotId);
-        vaultFixes$isDirty = true;
+        vaultFixes$getVaultPlayerData().vaultFixes$addSnapshot(snapshotId);
     }
     //endregion Snapshots
 
-
-    //region IsDirty
-    @Unique
-    private boolean vaultFixes$isDirty = false;
     @Override
     public boolean vaultFixes$isDirty() {
-        return vaultFixes$isDirty;
+        return vaultFixes$getVaultPlayerData().vaultFixes$isDirty();
     }
-    @Override
-    public void vaultFixes$markClean() {
-        vaultFixes$isDirty = false;
-    }
-    @Override
-    public void vaultFixes$markDirty() {
-        vaultFixes$isDirty = true;
-    }
-    //endregion IsDirty
 }

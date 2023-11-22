@@ -8,6 +8,7 @@ import iskallia.vault.init.ModItems;
 import iskallia.vault.util.calc.PlayerStatisticsCollector;
 import iskallia.vault.world.data.VaultSnapshots;
 import net.cdnbcn.vaultfixes.VaultFixes;
+import net.cdnbcn.vaultfixes.mixin_interfaces.saving.ServerPlayerMixinInterface;
 import net.cdnbcn.vaultfixes.mixin_interfaces.saving.VaultSnapshotsMixinInterface;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -30,7 +31,7 @@ public class PlayerStatisticsCollector$VaultRunsSnapshotMixin {
         PlayerStatisticsCollector.VaultRunsSnapshot data = new PlayerStatisticsCollector.VaultRunsSnapshot();
         final var vaultSnapshots = (VaultSnapshotsMixinInterface)VaultSnapshots.get(VaultFixes.getServer());
 
-        vaultSnapshots.vaultFixes$getAllForPlayer(sPlayer.getUUID()).map(vaultSnapshots::vaultFixes$getSnapshot).forEach(snapshot ->{
+        vaultSnapshots.vaultFixes$readSnapshots(((ServerPlayerMixinInterface)sPlayer).vaultFixes$getAllSnapshots()).forEach(snapshot ->{
             Vault vault = snapshot.getEnd();
             if (vault != null) {
                 vault.ifPresent(Vault.STATS, collector -> {

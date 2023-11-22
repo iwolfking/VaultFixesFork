@@ -12,7 +12,6 @@ import net.cdnbcn.vaultfixes.mixin_interfaces.saving.VaultSnapshotMixinInterface
 import net.cdnbcn.vaultfixes.mixin_interfaces.saving.VaultSnapshotsMixinInterface;
 import net.cdnbcn.vaultfixes.saving.PlayerSaveManger;
 import net.minecraft.nbt.*;
-import net.minecraftforge.server.ServerLifecycleHooks;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -50,7 +49,7 @@ public class VaultSnapshotsMixin implements VaultSnapshotsMixinInterface {
      */
     @Overwrite(remap = false)
     public static VaultSnapshot get(UUID vaultId) {
-        return ((VaultSnapshotsMixinInterface)VaultSnapshots.get(ServerLifecycleHooks.getCurrentServer())).vaultFixes$getSnapshot(vaultId);
+        return VaultFixes.getVaultSnapshots().vaultFixes$getSnapshot(vaultId);
     }
     /**
      * @author KoromaruKoruko

@@ -3,11 +3,9 @@ package net.cdnbcn.vaultfixes.mixin.saving;
 import iskallia.vault.core.vault.Vault;
 import iskallia.vault.core.vault.stat.*;
 import iskallia.vault.world.data.PlayerStatsData;
-import iskallia.vault.world.data.VaultSnapshots;
 import it.unimi.dsi.fastutil.objects.*;
 import net.cdnbcn.vaultfixes.VaultFixes;
 import net.cdnbcn.vaultfixes.mixin_interfaces.saving.StatTotalsMixinInterface;
-import net.cdnbcn.vaultfixes.mixin_interfaces.saving.VaultSnapshotsMixinInterface;
 import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.*;
 
@@ -39,9 +37,9 @@ public class StatTotalsMixin implements StatTotalsMixinInterface {
      */
     @Overwrite(remap = false)
     public static StatTotals of(UUID playerUuid) {
-        final var vaultSnapshots = (VaultSnapshotsMixinInterface)VaultSnapshots.get(VaultFixes.getServer());
-        Stream<Vault> vaults = vaultSnapshots.vaultFixes$getAllForPlayer(playerUuid)
-                .map(vaultSnapshots::vaultFixes$getSnapshot)
+        final var vaultSnapshots = VaultFixes.getVaultSnapshots();
+        Stream<Vault> vaults =
+                vaultSnapshots.vaultFixes$readSnapshots(vaultSnapshots.vaultFixes$getAllForPlayer(playerUuid))
                 .filter(Objects::nonNull)
                 .map(VaultSnapshot::getEnd)
                 .filter(Objects::nonNull);

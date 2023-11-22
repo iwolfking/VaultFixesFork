@@ -197,13 +197,13 @@ class DynamicNbtSerializer<T : Any> private constructor(type: KClass<T>) {
             {data, tag -> if (tag.contains(name)) field.set(data, tag.getDouble(name)); last.load(data,tag) }
         )
     }
-    private fun compoundActions(field: Field, name: String, last: SLActions<T>) : SLActions<T> {
+    private fun compoundActions(field: Field, name: String, @Suppress("UNUSED_PARAMETER") last: SLActions<T>) : SLActions<T> {
         return SLActions(
             {data, tag -> tag.put(name, field.get(data) as CompoundTag) },
             {data, tag -> if (tag.contains(name)) field.set(data, tag.getCompound(name)) }
         )
     }
-    private fun listActions(field: Field, name: String, last: SLActions<T>) : SLActions<T> {
+    private fun listActions(field: Field, name: String, @Suppress("UNUSED_PARAMETER") last: SLActions<T>) : SLActions<T> {
         return SLActions(
             {data, tag -> tag.put(name, field.get(data) as ListTag) },
             {data, tag -> if (tag.contains(name)) field.set(data, tag.get(name) as ListTag)  }

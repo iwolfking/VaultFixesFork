@@ -5,10 +5,8 @@ import iskallia.vault.init.ModNetwork;
 import iskallia.vault.network.message.ServerboundOpenHistoricMessage;
 import iskallia.vault.network.message.VaultPlayerHistoricDataMessage;
 import iskallia.vault.world.data.PlayerHistoricFavoritesData;
-import iskallia.vault.world.data.VaultSnapshots;
 import net.cdnbcn.vaultfixes.VaultFixes;
 import net.cdnbcn.vaultfixes.mixin_interfaces.saving.ServerPlayerMixinInterface;
-import net.cdnbcn.vaultfixes.mixin_interfaces.saving.VaultSnapshotsMixinInterface;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
@@ -35,7 +33,7 @@ public class ServerboundOpenHistoricMessageMixin {
                 () -> {
                     ServerPlayer sender = context.getSender();
                     if (sender != null) {
-                        final var vaultSnapshots = (VaultSnapshotsMixinInterface)VaultSnapshots.get(VaultFixes.getServer());
+                        final var vaultSnapshots = VaultFixes.getVaultSnapshots();
                         ArrayList<UUID> resultIds =
                                 ((ServerPlayerMixinInterface)sender).vaultFixes$getLastSnapshots(vaultFixes$loadAmount)
                                 .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);

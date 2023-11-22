@@ -7,6 +7,7 @@ import java.util.function.Consumer
 import kotlin.collections.ArrayList
 
 interface ISavableData {
+    @Suppress("FunctionName")
     fun `vaultFixes$isDirty`(): Boolean
 }
 internal interface ICleanUpAccessor {
@@ -20,7 +21,7 @@ class TemporalMapCache<K, V : ISavableData>(private val lifeTimeSeconds: Long, p
     companion object {
         private val timer = Timer("TemporalMapCacheCleanupThread",true)
         init {
-            timer.scheduleAtFixedRate(DelegatingTimerTask(::doCleanUp), 10*1000L, 10*1000L)
+            timer.scheduleAtFixedRate(DelegatingTimerTask(::doCleanUp), 30*1000L, 10*1000L)
             Runtime.getRuntime().addShutdownHook(Thread(::doCleanUpAll, "TemporalShutdownHook"))
         }
 
