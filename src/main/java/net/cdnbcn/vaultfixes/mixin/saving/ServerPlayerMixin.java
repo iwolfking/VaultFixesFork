@@ -1,6 +1,5 @@
 package net.cdnbcn.vaultfixes.mixin.saving;
 
-import com.ibm.icu.impl.Assert;
 import net.cdnbcn.vaultfixes.mixin_interfaces.saving.IVaultPlayerData;
 import net.cdnbcn.vaultfixes.mixin_interfaces.saving.ServerPlayerMixinInterface;
 import net.cdnbcn.vaultfixes.saving.PlayerSaveManger;
@@ -35,7 +34,8 @@ public class ServerPlayerMixin implements ServerPlayerMixinInterface {
     private IVaultPlayerData vaultFixes$getVaultPlayerData(){
         if(vaultFixes$vaultPlayerData == null){
             vaultFixes$vaultPlayerData = PlayerSaveManger.getPlayerDataOnlineDirect((ServerPlayer)(Object)this);
-            Assert.assrt("VaultPlayerData.playerUUID != Player.uuid", vaultFixes$vaultPlayerData.vaultFixes$getPlayerUUID() == ((ServerPlayer)(Object)this).getUUID());
+            if(vaultFixes$vaultPlayerData.vaultFixes$getPlayerUUID() == ((ServerPlayer)(Object)this).getUUID())
+                throw new RuntimeException("VaultPlayerData.playerUUID != Player.uuid");
         }
         return vaultFixes$vaultPlayerData;
     }
