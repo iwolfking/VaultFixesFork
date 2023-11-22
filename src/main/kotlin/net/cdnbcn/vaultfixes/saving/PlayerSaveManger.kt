@@ -8,9 +8,9 @@ import net.cdnbcn.vaultfixes.mixin_interfaces.saving.IVaultPlayerDataRW
 import net.cdnbcn.vaultfixes.mixin_interfaces.saving.VaultSnapshotsMixinInterface
 import net.minecraft.nbt.*
 import net.minecraft.server.level.ServerPlayer
-import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent
+import thedarkcolour.kotlinforforge.forge.FORGE_BUS
 import java.io.File
 import java.nio.file.Path
 import java.util.*
@@ -25,10 +25,10 @@ object PlayerSaveManger {
 
     @JvmStatic
     internal fun initialize() {
-        MinecraftForge.EVENT_BUS.addListener(this::onPlayerJoin)
-        MinecraftForge.EVENT_BUS.addListener(this::onPlayerLeave)
-
         PlayerDataFolder = VaultFixes.dataDir.resolve("playerdata").createDirectories()
+
+        FORGE_BUS.addListener(this::onPlayerJoin)
+        FORGE_BUS.addListener(this::onPlayerLeave)
     }
 
     @JvmStatic

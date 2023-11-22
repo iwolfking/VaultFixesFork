@@ -2,10 +2,10 @@ package net.cdnbcn.vaultfixes.config
 
 import net.cdnbcn.vaultfixes.data.SimpleEventHandler
 import net.minecraftforge.common.ForgeConfigSpec
-import net.minecraftforge.fml.ModLoadingContext
 import net.minecraftforge.fml.config.ModConfig
 import net.minecraftforge.fml.event.config.ModConfigEvent
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
+import thedarkcolour.kotlinforforge.forge.MOD_BUS
+import thedarkcolour.kotlinforforge.forge.registerConfig
 
 object ConfigManager {
     val config: Config
@@ -20,9 +20,8 @@ object ConfigManager {
         config = conf
         configSpec = spec
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, spec)
-        FMLJavaModLoadingContext.get().modEventBus.addListener(::onConfigChanged)
-
+        registerConfig(ModConfig.Type.SERVER, spec)
+        MOD_BUS.addListener(::onConfigChanged)
     }
 
     private fun onConfigChanged(event : ModConfigEvent){
