@@ -32,10 +32,6 @@ object PlayerSaveManger {
     }
 
     @JvmStatic
-    fun getPlayerDataOnlineDirect(player: ServerPlayer) : IVaultPlayerData {
-        return onlinePlayerMap[player.uuid]!!
-    }
-    @JvmStatic
     fun getPlayerData(playerId: UUID): IVaultPlayerData {
         return onlinePlayerMap.getOrElse(playerId) {
             synchronized(offlinePlayerMap) {
@@ -58,13 +54,13 @@ object PlayerSaveManger {
             // load player data, from offlineCache else from disc
             val offlineData = offlinePlayerMap.remove(serverPlayer.uuid)
             onlinePlayerMap[serverPlayer.uuid] =
-            if (offlineData != null)
-                offlineData
-            else {
-                val data = VaultPlayerData(serverPlayer.uuid)
-                readDataFromDisc(data)
-                data
-            }
+                if (offlineData != null)
+                    offlineData
+                else {
+                    val data = VaultPlayerData(serverPlayer.uuid)
+                    readDataFromDisc(data)
+                    data
+                }
         } catch (ex: Exception) {
             VaultFixes.logger.error("Failed onPlayerJoin For: ${serverPlayer.uuid}", ex)
         }

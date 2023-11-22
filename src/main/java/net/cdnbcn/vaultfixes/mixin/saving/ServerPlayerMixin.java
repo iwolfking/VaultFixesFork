@@ -33,7 +33,7 @@ public class ServerPlayerMixin implements ServerPlayerMixinInterface {
     @Unique
     private IVaultPlayerData vaultFixes$getVaultPlayerData(){
         if(vaultFixes$vaultPlayerData == null){
-            vaultFixes$vaultPlayerData = PlayerSaveManger.getPlayerDataOnlineDirect((ServerPlayer)(Object)this);
+            vaultFixes$vaultPlayerData = PlayerSaveManger.getPlayerData(((ServerPlayer)(Object)this).getUUID());
             if(vaultFixes$vaultPlayerData.vaultFixes$getPlayerUUID() != ((ServerPlayer)(Object)this).getUUID())
                 throw new RuntimeException("VaultPlayerData.playerUUID != Player.uuid");
         }
