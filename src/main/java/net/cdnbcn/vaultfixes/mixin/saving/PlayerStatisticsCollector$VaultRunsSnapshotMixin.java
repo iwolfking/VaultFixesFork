@@ -29,7 +29,7 @@ public class PlayerStatisticsCollector$VaultRunsSnapshotMixin {
     @Overwrite(remap = false)
     public static PlayerStatisticsCollector.VaultRunsSnapshot ofPlayer(ServerPlayer sPlayer) {
         PlayerStatisticsCollector.VaultRunsSnapshot data = new PlayerStatisticsCollector.VaultRunsSnapshot();
-        final var vaultSnapshots = (VaultSnapshotsMixinInterface)VaultSnapshots.get(VaultFixes.getServer());
+        final var vaultSnapshots = (VaultSnapshotsMixinInterface)VaultSnapshots.get(VaultFixes.INSTANCE.getServer());
 
         vaultSnapshots.vaultFixes$readSnapshots(((ServerPlayerMixinInterface)sPlayer).vaultFixes$getAllSnapshots()).forEach(snapshot ->{
             Vault vault = snapshot.getEnd();

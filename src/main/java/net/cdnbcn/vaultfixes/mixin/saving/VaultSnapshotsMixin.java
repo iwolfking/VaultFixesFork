@@ -31,7 +31,7 @@ public class VaultSnapshotsMixin implements VaultSnapshotsMixinInterface {
     // debug only function
     @Inject(method = "create", at=@At("RETURN"), remap = false)
     private static void create(CompoundTag tag, CallbackInfoReturnable<VaultSnapshots> cir) {
-        VaultFixes.getLogger().debug("Creating VaultSnapshots DataStorage");
+        VaultFixes.INSTANCE.getLogger().debug("Creating VaultSnapshots DataStorage");
     }
 
 
@@ -49,7 +49,7 @@ public class VaultSnapshotsMixin implements VaultSnapshotsMixinInterface {
      */
     @Overwrite(remap = false)
     public static VaultSnapshot get(UUID vaultId) {
-        return VaultFixes.getVaultSnapshots().vaultFixes$getSnapshot(vaultId);
+        return VaultFixes.INSTANCE.getVaultSnapshots().vaultFixes$getSnapshot(vaultId);
     }
     /**
      * @author KoromaruKoruko
@@ -70,9 +70,9 @@ public class VaultSnapshotsMixin implements VaultSnapshotsMixinInterface {
             sb.append(frame.toString());
             sb.append('\n');
         }
-        VaultFixes.getLogger().error(sb.toString());
+        VaultFixes.INSTANCE.getLogger().error(sb.toString());
 
-        return VaultFixes.getVaultSnapshots().vaultFixes$getAllSnapshots().toList();
+        return VaultFixes.INSTANCE.getVaultSnapshots().vaultFixes$getAllSnapshots().toList();
     }
 
 
@@ -84,7 +84,7 @@ public class VaultSnapshotsMixin implements VaultSnapshotsMixinInterface {
      */
     @Overwrite(remap = false)
     public static void onVaultStarted(Vault vault) {
-        final var rawVaultSnapshots = VaultSnapshots.get(VaultFixes.getServer());
+        final var rawVaultSnapshots = VaultSnapshots.get(VaultFixes.INSTANCE.getServer());
         final var vaultSnapshots = ((VaultSnapshotsMixinInterface)rawVaultSnapshots);
         vaultSnapshots.vaultFixes$createSnapshot(vault);
         rawVaultSnapshots.setDirty();
@@ -95,7 +95,7 @@ public class VaultSnapshotsMixin implements VaultSnapshotsMixinInterface {
      */
     @Overwrite(remap = false)
     public static void onVaultEnded(Vault vault) {
-        final var rawVaultSnapshots = VaultSnapshots.get(VaultFixes.getServer());
+        final var rawVaultSnapshots = VaultSnapshots.get(VaultFixes.INSTANCE.getServer());
         final var vaultSnapshots = ((VaultSnapshotsMixinInterface)rawVaultSnapshots);
         final var vaultId = vault.get(Vault.ID);
 
@@ -222,7 +222,7 @@ public class VaultSnapshotsMixin implements VaultSnapshotsMixinInterface {
             }
         }
 
-        VaultFixes.getLogger().error("VaultSnapshots: failed to fetch snapshot for "+id);
+        VaultFixes.INSTANCE.getLogger().error("VaultSnapshots: failed to fetch snapshot for "+id);
         return null;
     }
 
@@ -305,7 +305,7 @@ public class VaultSnapshotsMixin implements VaultSnapshotsMixinInterface {
     private static Path vaultFixes$getSnapshotsSaveFolder() {
         if(vaultFixes$_snapshotsFolder == null)
             try {
-                vaultFixes$_snapshotsFolder = Files.createDirectories(VaultFixes.getDataDir().resolve("snapshots"));
+                vaultFixes$_snapshotsFolder = Files.createDirectories(VaultFixes.INSTANCE.getDataDir().resolve("snapshots"));
             } catch (IOException e) {
                 throw new RuntimeException(e); // should never happen!
             }

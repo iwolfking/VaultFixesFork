@@ -90,7 +90,7 @@ class TemporalMapCache<K, V : ISavableData>(private val lifeTimeSeconds: Long, p
     }
     override fun doCleanUpAll() {
         synchronized(map) {
-            map.values.parallelStream().forEach{
+            map.values.parallelStream().forEach {
                 val data = it.getNoAccess()
                 if (data.`vaultFixes$isDirty`())
                     try { onSave.accept(data) } catch (ignored: Exception) {}

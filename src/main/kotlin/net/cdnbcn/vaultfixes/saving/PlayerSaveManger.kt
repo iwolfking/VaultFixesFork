@@ -28,7 +28,7 @@ object PlayerSaveManger {
         MinecraftForge.EVENT_BUS.addListener(this::onPlayerJoin)
         MinecraftForge.EVENT_BUS.addListener(this::onPlayerLeave)
 
-        PlayerDataFolder = VaultFixes.getDataDir().resolve("playerdata").createDirectories()
+        PlayerDataFolder = VaultFixes.dataDir.resolve("playerdata").createDirectories()
     }
 
     @JvmStatic
@@ -41,7 +41,7 @@ object PlayerSaveManger {
     }
     @JvmStatic
     fun getPlayerData(playerId: UUID): IVaultPlayerData {
-        val playerList = VaultFixes.getServer().playerList
+        val playerList = VaultFixes.server.playerList
         val onlinePlayer = playerList.getPlayer(playerId)
         if (onlinePlayer != null)
             return getPlayerData(onlinePlayer)
@@ -73,7 +73,7 @@ object PlayerSaveManger {
                 data
             }
         }catch (ex: Exception) {
-            VaultFixes.getLogger().error("Failed onPlayerJoin For: ${serverPlayer.uuid}", ex)
+            VaultFixes.logger.error("Failed onPlayerJoin For: ${serverPlayer.uuid}", ex)
         }
     }
     @JvmStatic
@@ -85,7 +85,7 @@ object PlayerSaveManger {
             saveDataToDisc(data)
             offlinePlayerMap[serverPlayer.uuid] = data
         } catch (ex: Exception) {
-            VaultFixes.getLogger().error("Failed onPlayerLeave For: ${serverPlayer.uuid}", ex)
+            VaultFixes.logger.error("Failed onPlayerLeave For: ${serverPlayer.uuid}", ex)
         }
     }
     @JvmStatic
@@ -98,12 +98,12 @@ object PlayerSaveManger {
 
     //region Data Management
     private fun readDataFromDisc(data: IVaultPlayerDataRW) {
-        VaultFixes.getLogger().debug("Loading VaultPlayerData: {}", data.`vaultFixes$getPlayerUUID`())
+        VaultFixes.logger.debug("Loading VaultPlayerData: {}", data.`vaultFixes$getPlayerUUID`())
         loadData(readNbt(data.`vaultFixes$getPlayerUUID`()), data)
     }
     @JvmStatic
     private fun saveDataToDisc(data: IVaultPlayerDataRW){
-        VaultFixes.getLogger().debug("Saving VaultPlayerData: {}", data.`vaultFixes$getPlayerUUID`())
+        VaultFixes.logger.debug("Saving VaultPlayerData: {}", data.`vaultFixes$getPlayerUUID`())
         writeNbt(data.`vaultFixes$getPlayerUUID`(), saveData(data))
     }
     private fun getFileLoc(playerId: UUID) : File {
@@ -122,7 +122,7 @@ object PlayerSaveManger {
     }
     private fun loadData(tag: CompoundTag, data: IVaultPlayerDataRW) {
         val uuid = data.`vaultFixes$getPlayerUUID`()
-        val vaultSnapshots = VaultSnapshots.get(VaultFixes.getServer()) as VaultSnapshotsMixinInterface
+        val vaultSnapshots = VaultSnapshots.get(VaultFixes.server) as VaultSnapshotsMixinInterface
 
         @Suppress("NAME_SHADOWING")
         val tag =

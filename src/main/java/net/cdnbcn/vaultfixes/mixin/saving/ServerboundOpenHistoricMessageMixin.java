@@ -33,7 +33,7 @@ public class ServerboundOpenHistoricMessageMixin {
                 () -> {
                     ServerPlayer sender = context.getSender();
                     if (sender != null) {
-                        final var vaultSnapshots = VaultFixes.getVaultSnapshots();
+                        final var vaultSnapshots = VaultFixes.INSTANCE.getVaultSnapshots();
                         ArrayList<UUID> resultIds =
                                 ((ServerPlayerMixinInterface)sender).vaultFixes$getLastSnapshots(vaultFixes$loadAmount)
                                 .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
