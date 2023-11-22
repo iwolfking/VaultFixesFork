@@ -44,6 +44,7 @@ object PlayerSaveManger {
 
         synchronized(offlinePlayerMap) {
             return offlinePlayerMap.getOrPut(playerId) {
+                VaultFixes.getLogger().debug("Loading VaultPlayerData from FileStore into OfflinePlayer: {}", playerId)
                 val offlinePlayerData = OfflineVaultPlayerData(playerId)
                 loadData(readNbt(playerId), offlinePlayerData)
                 offlinePlayerData
@@ -58,23 +59,37 @@ object PlayerSaveManger {
         val serverPlayer = event.player as ServerPlayer
         val player = serverPlayer as IVaultPlayerDataRW
 
-        // load player data, from offlineCache else from disc
-        val offlineData = offlinePlayerMap.remove(serverPlayer.uuid)
-        if (offlineData != null)
-            copyData(offlineData, player)
-        else
-            loadData(readNbt(serverPlayer.uuid), player)
+        try {
+            // load player data, from offlineCache else from disc
+            val offlineData = offlinePlayerMap.remove(serverPlayer.uuid)
+            if (offlineData != null) {
+                copyData(offlineData, player)
+                VaultFixes.getLogger().debug("Loading VaultPlayerData from OfflineDataStore into OnlinePlayer: {}", player.`vaultFixes$getPlayerUUID`())
+            }
+            else {
+                loadData(readNbt(serverPlayer.uuid), player)
+                VaultFixes.getLogger().debug("Loading VaultPlayerData from FileStore into OnlinePlayer: {}", player.`vaultFixes$getPlayerUUID`())
+            }
+        }catch (ex: Exception) {
+            VaultFixes.getLogger().error("Failed onPlayerJoin For: ${player.`vaultFixes$getPlayerUUID`()}", ex)
+        }
     }
     @JvmStatic
     private fun onPlayerLeave(event: PlayerLoggedOutEvent) {
         val serverPlayer = event.player as ServerPlayer
         val player = serverPlayer as IVaultPlayerDataRW
 
-
-        val offlineData = OfflineVaultPlayerData(serverPlayer.uuid)
-        copyData(player, offlineData)
-        writeNbt(serverPlayer.uuid, saveData(player))
-        offlinePlayerMap[serverPlayer.uuid] = offlineData
+        try {
+            val offlineData = OfflineVaultPlayerData(serverPlayer.uuid)
+            VaultFixes.getLogger().debug("Moving OnlinePlayerData to OfflinePlayerData: {}", player.`vaultFixes$getPlayerUUID`())
+            copyData(player, offlineData)
+            offlineData.`vaultFixes$markClean`()
+            offlinePlayerMap[serverPlayer.uuid] = offlineData
+            VaultFixes.getLogger().debug("Saving OnlinePlayerData: {}", player.`vaultFixes$getPlayerUUID`())
+            writeNbt(serverPlayer.uuid, saveData(player))
+        } catch (ex: Exception) {
+            VaultFixes.getLogger().error("Failed onPlayerLeave For: ${player.`vaultFixes$getPlayerUUID`()}", ex)
+        }
     }
     @JvmStatic
     internal fun notifyPlayerSaving(player: ServerPlayer) {
@@ -86,6 +101,10 @@ object PlayerSaveManger {
 
     //region Data Management
     private fun saveDataToDisc(data: IVaultPlayerDataRW){
+        if (data is ServerPlayer)
+            VaultFixes.getLogger().debug("Saving OnlinePlayerData: {}", data.`vaultFixes$getPlayerUUID`())
+        else
+            VaultFixes.getLogger().debug("Saving OfflinePlayerData: {}", data.`vaultFixes$getPlayerUUID`())
         writeNbt(data.`vaultFixes$getPlayerUUID`(), saveData(data))
     }
     private fun getFileLoc(playerId: UUID) : File {

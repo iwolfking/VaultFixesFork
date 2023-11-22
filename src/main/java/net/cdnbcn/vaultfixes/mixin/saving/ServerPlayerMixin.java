@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -33,9 +34,9 @@ public class ServerPlayerMixin implements ServerPlayerMixinInterface, IVaultPlay
     @Unique
     ArrayList<UUID> vaultFixes$snapshots;
     @Override
-    public void vaultFixes$setSnapshots(@NotNull ArrayList<UUID> snapshots) { this.vaultFixes$snapshots = snapshots; }
+    public void vaultFixes$setSnapshots(@NotNull ArrayList<UUID> snapshots) { this.vaultFixes$snapshots = Objects.requireNonNull(snapshots); }
     @Override
-    public @NotNull ArrayList<UUID> vaultFixes$getSnapshots() { return vaultFixes$snapshots; }
+    public @NotNull ArrayList<UUID> vaultFixes$getSnapshots() { return Objects.requireNonNull(vaultFixes$snapshots); }
     @Override
     public Stream<UUID> vaultFixes$getAllSnapshots() { return vaultFixes$snapshots.stream(); }
 
