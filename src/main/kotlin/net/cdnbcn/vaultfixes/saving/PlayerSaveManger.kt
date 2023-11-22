@@ -36,21 +36,14 @@ object PlayerSaveManger {
         return onlinePlayerMap[player.uuid]!!
     }
     @JvmStatic
-    fun getPlayerData(player: ServerPlayer): IVaultPlayerData {
-        return player as IVaultPlayerData
-    }
-    @JvmStatic
     fun getPlayerData(playerId: UUID): IVaultPlayerData {
-        val playerList = VaultFixes.server.playerList
-        val onlinePlayer = playerList.getPlayer(playerId)
-        if (onlinePlayer != null)
-            return getPlayerData(onlinePlayer)
-
-        synchronized(offlinePlayerMap) {
-            return offlinePlayerMap.getOrPut(playerId) {
-                val offlinePlayerData = VaultPlayerData(playerId)
-                readDataFromDisc(offlinePlayerData)
-                offlinePlayerData
+        return onlinePlayerMap.getOrElse(playerId) {
+            synchronized(offlinePlayerMap) {
+                return@getOrElse offlinePlayerMap.getOrPut(playerId) {
+                    val offlinePlayerData = VaultPlayerData(playerId)
+                    readDataFromDisc(offlinePlayerData)
+                    offlinePlayerData
+                }
             }
         }
     }
@@ -72,7 +65,7 @@ object PlayerSaveManger {
                 readDataFromDisc(data)
                 data
             }
-        }catch (ex: Exception) {
+        } catch (ex: Exception) {
             VaultFixes.logger.error("Failed onPlayerJoin For: ${serverPlayer.uuid}", ex)
         }
     }
@@ -90,9 +83,13 @@ object PlayerSaveManger {
     }
     @JvmStatic
     internal fun notifyPlayerSaving(player: ServerPlayer) {
-        val data = getPlayerDataOnlineDirect(player)
-        if(data.`vaultFixes$isDirty`())
-            saveDataToDisc(data as IVaultPlayerDataRW)
+        try {
+            val data = getPlayerData(player.uuid) // get data by store not by player
+            if (data.`vaultFixes$isDirty`())
+                saveDataToDisc(data as IVaultPlayerDataRW)
+        } catch (ex: Exception) {
+            VaultFixes.logger.error("Failed notifyPlayerSaving For: ${player.uuid}", ex)
+        }
     }
     //endregion events
 
