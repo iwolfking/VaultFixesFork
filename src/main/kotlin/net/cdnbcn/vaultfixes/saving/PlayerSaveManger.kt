@@ -90,7 +90,7 @@ object PlayerSaveManger {
     }
     @JvmStatic
     internal fun notifyPlayerSaving(player: ServerPlayer) {
-        val data = getPlayerData(player)
+        val data = getPlayerDataOnlineDirect(player)
         if(data.`vaultFixes$isDirty`())
             saveDataToDisc(data as IVaultPlayerDataRW)
     }
