@@ -172,6 +172,11 @@ dependencies {
     implementation fg.deobf("blank:ispawner:${ispawners_version}-forge")
     implementation fg.deobf("blank:modular-routers-${minecraft_version}:${modular_routers_version}")
 
+    implementation fg.deobf("blank:flan-${minecraft_version}:${flan_version}-forge")
+    implementation fg.deobf("blank:easy_villagers-${minecraft_version}:${easy_villagers_version}")
+    implementation fg.deobf("blank:camera-${minecraft_version}:${camera_version}")
+    implementation fg.deobf("blank:create-${minecraft_version}:${create_version}")
+
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
