@@ -1,13 +1,22 @@
 package net.cdnbcn.vaultfixes
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.logging.LogUtils
+import iskallia.vault.world.data.PlayerAbilitiesData
+import iskallia.vault.world.data.PlayerTalentsData
+import iskallia.vault.world.data.PlayerVaultStatsData
+import iskallia.vault.world.data.QuestStatesData
 import iskallia.vault.world.data.VaultSnapshots
 import net.cdnbcn.vaultfixes.config.ConfigManager.config
 import net.cdnbcn.vaultfixes.data.TemporalMapCache.Companion.doCleanUpAll
 import net.cdnbcn.vaultfixes.mixin_interfaces.saving.VaultSnapshotsMixinInterface
 import net.cdnbcn.vaultfixes.saving.PlayerSaveManger.initialize
+import net.minecraft.commands.CommandSourceStack
+import net.minecraft.network.chat.TextComponent
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.dedicated.DedicatedServerProperties
+import net.minecraft.server.level.ServerPlayer
+import net.minecraftforge.event.RegisterCommandsEvent
 import net.minecraftforge.event.server.ServerStoppingEvent
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.loading.FMLEnvironment
@@ -48,11 +57,42 @@ object VaultFixes {
 
         config // invoke initializer to preload config
         FORGE_BUS.addListener(this::onServerStopping)
+        FORGE_BUS.addListener(this::onCommandRegistration)
         initialize()
     }
 
     private fun onServerStopping(@Suppress("UNUSED_PARAMETER") event: ServerStoppingEvent) {
         doCleanUpAll() // eject all potentially unsaved data
+    }
+
+    private fun onCommandRegistration(event: RegisterCommandsEvent) {
+        event.dispatcher.register(
+            literal<CommandSourceStack?>("correctmyskillpoints").executes {
+                if(it.source.entity is ServerPlayer) {
+                    val player = it.source.entity as ServerPlayer
+                    val statsData: PlayerVaultStatsData = PlayerVaultStatsData.get(it.source.server)
+                    val playerStats = statsData.getVaultStats(player)
+
+                    var totalPoints = playerStats.vaultLevel
+                    if(QuestStatesData.get().getState(player).completed.contains("learning_skills"))
+                        totalPoints += 1
+
+                    totalPoints -= (
+                            PlayerAbilitiesData.get(it.source.server).getAbilities(player).spentLearnPoints +
+                                    PlayerTalentsData.get(it.source.server).getTalents(player).spentLearnPoints +
+                                    playerStats.unspentSkillPoints
+                            )
+
+                    statsData.addRegretPoints(player, -playerStats.unspentRegretPoints)
+                    statsData.addSkillPoints(player, totalPoints)
+
+                    return@executes 0
+                } else {
+                    it.source.sendFailure(TextComponent("This must be run by a player"))
+                    return@executes 1
+                }
+            }
+        )
     }
 
     val server: MinecraftServer
