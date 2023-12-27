@@ -86,6 +86,12 @@ object VaultFixes {
                     statsData.addRegretPoints(player, -playerStats.unspentRegretPoints)
                     statsData.addSkillPoints(player, totalPoints)
 
+                    if(totalPoints > 0) {
+                        it.source.sendSuccess(TextComponent("$totalPoints has been returned to you."), false)
+                    } else if (totalPoints < 0) {
+                        it.source.sendSuccess(TextComponent("You have ${-totalPoints} extra points spent, these are being subtracted from your balance.\nYou can use regret orbs to return to zero skill points if in the negatives"), false)
+                    }
+
                     return@executes 0
                 } else {
                     it.source.sendFailure(TextComponent("This must be run by a player"))
