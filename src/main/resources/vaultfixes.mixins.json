@@ -2,6 +2,7 @@
   "required": true,
   "minVersion": "0.8",
   "package": "net.cdnbcn.vaultfixes.mixin",
+  "plugin" : "net.cdnbcn.vaultfixes.mixin.VaultFixesMixinPlugin",
   "compatibilityLevel": "JAVA_8",
   "refmap": "vaultfixes.refmap.json",
   "mixins": [],
