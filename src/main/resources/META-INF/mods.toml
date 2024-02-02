@@ -65,3 +65,27 @@ description='''${mod_description}'''
    versionRange="${modular_routers_version}"
    ordering="AFTER"
    side="SERVER"
+[[dependencies.${mod_id}]]
+   modId="flan"
+   mandatory=false
+   versionRange="${flan_version}"
+   ordering="AFTER"
+   side="SERVER"
+[[dependencies.${mod_id}]]
+   modId="easy_villagers"
+   mandatory=true
+   versionRange="${easy_villagers_version}"
+   ordering="AFTER"
+   side="SERVER"
+[[dependencies.${mod_id}]]
+   modId="create"
+   mandatory=true
+   versionRange="${create_version}"
+   ordering="AFTER"
+   side="SERVER"
+[[dependencies.${mod_id}]]
+   modId="camera"
+   mandatory=true
+   versionRange="${camera_version}"
+   ordering="AFTER"
+   side="SERVER"

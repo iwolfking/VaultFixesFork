@@ -26,6 +26,6 @@
 
 
 ---
-This mod is licenseD under the GNU AGPLv3. All modified versions of this mod on public servers **must** have their source code available.
+This mod is licensed under the GNU AGPLv3. All modified versions of this mod on public servers **must** have their source code available.
 
 [Full License Text](LICENSE)

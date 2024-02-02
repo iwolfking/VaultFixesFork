@@ -205,7 +205,11 @@ tasks.named('processResources', ProcessResources).configure {
             vault_hunters_jewel_sorting_version: vault_hunters_jewel_sorting_version,
             vaultintegrations_version: vaultintegrations_version,
             ispawners_version: ispawners_version,
-            modular_routers_version: modular_routers_version
+            modular_routers_version: modular_routers_version,
+            flan_version: flan_version,
+            camera_version: camera_version,
+            create_version: create_version,
+            easy_villagers_version: easy_villagers_version
     ]
 
     inputs.properties replaceProperties
