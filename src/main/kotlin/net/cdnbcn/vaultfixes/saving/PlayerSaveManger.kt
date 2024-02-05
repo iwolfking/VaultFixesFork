@@ -26,9 +26,10 @@ object PlayerSaveManger {
     @JvmStatic
     internal fun initialize() {
         PlayerDataFolder = VaultFixes.dataDir.resolve("playerdata").createDirectories()
-
-        FORGE_BUS.addListener(this::onPlayerJoin)
-        FORGE_BUS.addListener(this::onPlayerLeave)
+        if(VaultFixes.newDataStructureEnabled) {
+            FORGE_BUS.addListener(this::onPlayerJoin)
+            FORGE_BUS.addListener(this::onPlayerLeave)
+        }
     }
 
     @JvmStatic

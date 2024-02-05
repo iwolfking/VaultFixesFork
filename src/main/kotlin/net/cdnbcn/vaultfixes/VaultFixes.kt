@@ -1,5 +1,6 @@
 package net.cdnbcn.vaultfixes
 
+import com.electronwill.nightconfig.core.file.FileConfig
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.logging.LogUtils
 import iskallia.vault.world.data.PlayerAbilitiesData
@@ -20,6 +21,7 @@ import net.minecraftforge.event.RegisterCommandsEvent
 import net.minecraftforge.event.server.ServerStoppingEvent
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.loading.FMLEnvironment
+import net.minecraftforge.fml.loading.FMLPaths
 import net.minecraftforge.server.ServerLifecycleHooks
 import org.slf4j.Logger
 import thedarkcolour.kotlinforforge.forge.FORGE_BUS
@@ -36,6 +38,8 @@ object VaultFixes {
      */
     val logger: Logger = LogUtils.getLogger()
     val dataDir: Path
+    val newDataStructureEnabled : Boolean
+
 
     init {
         if (!FMLEnvironment.dist.isDedicatedServer) {
@@ -44,6 +48,9 @@ object VaultFixes {
         }
 
         try {
+            val mixinConfig = FileConfig.of(FMLPaths.CONFIGDIR.get().resolve("vault-fixes-mixins.toml").toFile())
+            mixinConfig.load()
+            newDataStructureEnabled = mixinConfig.get("optimize_vault_data_storage")
             dataDir = Files.createDirectories(
                 Path.of(
                     DedicatedServerProperties.fromFile(Path.of("server.properties")).levelName,

@@ -1,5 +1,6 @@
 package net.cdnbcn.vaultfixes.data
 
+import net.cdnbcn.vaultfixes.VaultFixes
 import java.lang.ref.WeakReference
 import java.time.Instant
 import java.util.*
@@ -21,8 +22,10 @@ class TemporalMapCache<K, V : ISavableData>(private val lifeTimeSeconds: Long, p
     companion object {
         private val timer = Timer("TemporalMapCacheCleanupThread",true)
         init {
-            timer.scheduleAtFixedRate(DelegatingTimerTask(::doCleanUp), 30*1000L, 10*1000L)
-            Runtime.getRuntime().addShutdownHook(Thread(::doCleanUpAll, "TemporalShutdownHook"))
+            if(VaultFixes.newDataStructureEnabled) {
+                timer.scheduleAtFixedRate(DelegatingTimerTask(::doCleanUp), 30 * 1000L, 10 * 1000L)
+                Runtime.getRuntime().addShutdownHook(Thread(::doCleanUpAll, "TemporalShutdownHook"))
+            }
         }
 
         private val lock = Object()
