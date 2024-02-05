@@ -22,7 +22,6 @@ public class VaultFixesMixinPlugin implements IMixinConfigPlugin {
             new AbstractMap.SimpleEntry<>("optimize_bounties", List.of("MixinBountyData", "MixinCompletionTask", "MixinDamageTask", "MixinItemDiscoveryTask", "MixinItemSubmissionTask", "MixinKillEntityTask", "MixinMiningTask", "MixinTask", "TaskMixinInterface", "BountyDataMixinInterface")),
             new AbstractMap.SimpleEntry<>("optimize_vault_gear", List.of("VaultGearData_TypeMixin", "VaultGearDataMixin", "VaultGearData_TypeMixinInterface", "VaultGearDataMixinInterface")),
             new AbstractMap.SimpleEntry<>("optimize_player_skills", List.of("GroupSkillMixin", "SkillTreeMixin", "SpecializedSkillMixin", "TieredSkillMixin", "SkillParentInterface")),
-            new AbstractMap.SimpleEntry<>("fake_players_have_research", List.of("PlayerResearchesDataMixin", "StageManagerMixin")),
             new AbstractMap.SimpleEntry<>("flan_images_are_claimed", List.of("ImageEntityMixin")),
             new AbstractMap.SimpleEntry<>("flan_create_is_claimed", List.of("LinkHandlerMixin", "RedstoneLinkBlockMixin")),
             new AbstractMap.SimpleEntry<>("flan_villagers_are_claimed", List.of("VillagerEventsMixin")),
@@ -53,8 +52,6 @@ public class VaultFixesMixinPlugin implements IMixinConfigPlugin {
                     optimize_vault_gear = true
                     # Greatly reduce the performance impact of player skills - default: true\s
                     optimize_player_skills = true
-                    # Allow fake players to all mods (for autocrafting - default: true\s
-                    fake_players_have_research = true
                     # Options below this point will either change game balance or functionality\s
                     # Disallow players to modify images in others claims - default: true\s
                     flan_images_are_claimed = true

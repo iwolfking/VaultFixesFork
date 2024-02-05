@@ -38,9 +38,7 @@
     "skill.GroupSkillMixin",
     "skill.SkillTreeMixin",
     "skill.SpecializedSkillMixin",
-    "skill.TieredSkillMixin",
-    "fakeplayer.PlayerResearchesDataMixin",
-    "fakeplayer.StageManagerMixin"
+    "skill.TieredSkillMixin"
   ],
   "client": [
   ],
