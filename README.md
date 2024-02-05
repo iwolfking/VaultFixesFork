@@ -1,6 +1,6 @@
 # Vault Fixes
 ![server-side-only](https://img.shields.io/badge/environment-server-orangered?style=flat-square)
-![vault-hunters](https://img.shields.io/badge/vault_hunters-3.12.4-blue)
+![vault-hunters](https://img.shields.io/badge/vault_hunters-3.13-blue)
 
 *Some major (and minor) optimizations for Vault Hunters 3rd Edition*
 
