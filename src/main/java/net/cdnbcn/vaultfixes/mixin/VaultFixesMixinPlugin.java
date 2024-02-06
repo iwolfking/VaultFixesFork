@@ -2,6 +2,7 @@ package net.cdnbcn.vaultfixes.mixin;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.fml.loading.LoadingModList;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -78,7 +79,7 @@ public class VaultFixesMixinPlugin implements IMixinConfigPlugin {
             throw new RuntimeException("Failed to load vault-fixes-mixins.toml. Check your config.", e);
         }
         mixinEffectList.forEach((enabled, mixins) -> {
-            if((boolean) config.get(enabled)) {
+            if((!enabled.startsWith("flan") || LoadingModList.get().getModFileById("flan") != null) && (boolean) config.get(enabled)) {
                 allowedMixins.addAll(mixins);
             }
         });
