@@ -16,24 +16,6 @@ import static iskallia.vault.gear.data.VaultGearData.Type.ATTRIBUTES;
 
 @Mixin(VaultGearData.Type.class)
 public class VaultGearData_TypeMixin implements VaultGearData_TypeMixinInterface {
-    @Shadow(remap = false)
-    @Final
-    public static VaultGearData.Type PREFIXES;
-    @Shadow(remap = false)
-    @Final
-    public static VaultGearData.Type SUFFIXES;
-    @Shadow(remap = false)
-    @Final
-    public static VaultGearData.Type ALL_MODIFIERS;
-    @Shadow(remap = false)
-    @Final
-    public static VaultGearData.Type IMPLICIT_MODIFIERS;
-    @Shadow(remap = false)
-    @Final
-    public static VaultGearData.Type EXPLICIT_MODIFIERS;
-    @Shadow(remap = false)
-    @Final
-    public static VaultGearData.Type ALL;
 
 
     @Shadow(remap = false)
