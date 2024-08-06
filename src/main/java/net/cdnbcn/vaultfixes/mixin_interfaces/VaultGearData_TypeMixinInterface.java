@@ -6,6 +6,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Shadow;
 
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 public interface VaultGearData_TypeMixinInterface {
     @Final
@@ -22,5 +23,5 @@ public interface VaultGearData_TypeMixinInterface {
     public static VaultGearData.Type ALL = null;
 
     @SuppressWarnings("UNUSED")
-    void vaultFixes$setAttributeSource(Function<VaultGearData, Iterable<? extends VaultGearAttributeInstance<?>>> newSource);
+    void vaultFixes$setAttributeSource(Function<VaultGearData, Stream<? extends VaultGearAttributeInstance<?>>> newSource);
 }
