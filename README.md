@@ -1,6 +1,6 @@
 # Vault Fixes
 ![server-side-only](https://img.shields.io/badge/environment-server-orangered?style=flat-square)
-![vault-hunters](https://img.shields.io/badge/vault_hunters-3.13-blue)
+![vault-hunters](https://img.shields.io/badge/vault_hunters-3.15.1-blue)
 
 ### This mod require [Kotlin for Forge](https://www.curseforge.com/minecraft/mc-mods/kotlin-for-forge/files/4513187)
 
