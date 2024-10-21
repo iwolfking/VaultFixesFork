@@ -38,13 +38,15 @@ object VaultFixes {
      */
     val logger: Logger = LogUtils.getLogger()
     val dataDir: Path
-    val newDataStructureEnabled : Boolean
+    var newDataStructureEnabled : Boolean
 
 
     init {
+        actualInit()
         if (!FMLEnvironment.dist.isDedicatedServer) {
-            logger.error("VaultFixes is only for DedicatedServers, REFUSING TO LOAD")
-            throw RuntimeException("VaultFixes is only for DedicatedServers, REFUSING TO LOAD")
+            logger.error("VaultFixes is loading on client, disabling Vault Gear optimizations!")
+            newDataStructureEnabled = false
+            //throw RuntimeException("VaultFixes is only for DedicatedServers, REFUSING TO LOAD")
         }
 
         try {
@@ -62,10 +64,15 @@ object VaultFixes {
             throw RuntimeException(e)
         }
 
+
         config // invoke initializer to preload config
         FORGE_BUS.addListener(this::onServerStopping)
         FORGE_BUS.addListener(this::onCommandRegistration)
         initialize()
+    }
+
+    private fun actualInit() {
+
     }
 
     private fun onServerStopping(@Suppress("UNUSED_PARAMETER") event: ServerStoppingEvent) {
