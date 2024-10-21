@@ -147,6 +147,9 @@ repositories {
         name = 'Kotlin for Forge'
         url = 'https://thedarkcolour.github.io/KotlinForForge/'
     }
+    maven {
+        url "https://cursemaven.com"
+    }
 }
 
 dependencies {
@@ -166,15 +169,22 @@ dependencies {
     // Example mod dependency using a mod jar from ./libs with a flat dir repository
     // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
     // The group id is ignored when searching -- in this case, it is "blank"
-    implementation fg.deobf("blank:the_vault-${minecraft_version}:${the_vault_version}")
-    implementation fg.deobf("blank:vaultintegrations-${minecraft_version}:${vaultintegrations_version}")
-    implementation fg.deobf("blank:ispawner:${ispawners_version}-forge")
-    implementation fg.deobf("blank:modular-routers-${minecraft_version}:${modular_routers_version}")
-
-    implementation fg.deobf("blank:flan-${minecraft_version}:${flan_version}-forge")
-    implementation fg.deobf("blank:easy_villagers-${minecraft_version}:${easy_villagers_version}")
-    implementation fg.deobf("blank:camera-${minecraft_version}:${camera_version}")
-    implementation fg.deobf("blank:create-${minecraft_version}:${create_version}")
+    implementation fg.deobf("curse.maven:vault-hunters-official-mod-458203:5631250")
+    implementation fg.deobf("curse.maven:vault-integrations-867003:5401564")
+    implementation fg.deobf("curse.maven:ispawner-533792:5076088")
+    implementation fg.deobf("curse.maven:modular-routers-250294:4984984")
+    implementation fg.deobf("curse.maven:flan-forge-493246:4920888")
+    implementation fg.deobf("curse.maven:easy-villagers-400514:3887794")
+    implementation fg.deobf("curse.maven:camera-mod-289310:4625221")
+    implementation fg.deobf("curse.maven:create-328085:4550986")
+    //implementation fg.deobf("blank:the_vault-${minecraft_version}:${the_vault_version}")
+    //implementation fg.deobf("blank:vaultintegrations-${minecraft_version}:${vaultintegrations_version}")
+    //implementation fg.deobf("blank:ispawner:${ispawners_version}-forge")
+    //implementation fg.deobf("blank:modular-routers-${minecraft_version}:${modular_routers_version}")
+    //implementation fg.deobf("blank:flan-${minecraft_version}:${flan_version}-forge")
+    //implementation fg.deobf("blank:easy_villagers-${minecraft_version}:${easy_villagers_version}")
+    //implementation fg.deobf("blank:camera-${minecraft_version}:${camera_version}")
+    //implementation fg.deobf("blank:create-${minecraft_version}:${create_version}")
 
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html

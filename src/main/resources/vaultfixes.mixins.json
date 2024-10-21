@@ -26,8 +26,6 @@
     "flan.LinkHandlerMixin",
     "flan.RedstoneLinkBlockMixin",
     "flan.VillagerEventsMixin",
-    "gear.VaultGearData_TypeMixin",
-    "gear.VaultGearDataMixin",
     "saving.PlayerStatisticsCollector$VaultRunsSnapshotMixin",
     "saving.ServerboundOpenHistoricMessageMixin",
     "saving.ServerPlayerMixin",
